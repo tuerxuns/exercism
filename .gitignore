@@ -1,0 +1,24 @@
+# Compiled test binaries and cover profiles
+*.test
+*.out
+*.prof
+
+# Compiled executables
+bin/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor configurations
+.idea/
+.vscode/
+.zed/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Exercism metadata folders
+.exercism/
