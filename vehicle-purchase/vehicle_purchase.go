@@ -23,7 +23,7 @@ func CalculateResellPrice(originalPrice, age float64) float64 {
 	if age < 3 {
 		return originalPrice * 0.8
 	}
-	if age < 10.0 && age >= 3 {
+	if age < 10.0 {
 		return originalPrice * 0.7
 	}
 	return originalPrice * 0.5
