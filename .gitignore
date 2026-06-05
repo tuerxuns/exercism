@@ -22,3 +22,6 @@ Thumbs.db
 
 # Exercism metadata folders
 .exercism/
+
+# Agent skills folder
+.agents/
