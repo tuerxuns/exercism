@@ -13,6 +13,7 @@ Learn programming by solving Go exercises, building a solid foundation in softwa
 - **Prior Experience:** Already completed introductory exercises (Hello World, Lasagna, Cars Assemble, Raindrops, etc.). Has basic familiarity with variables, types, conditionals, and functions.
 - **Learning Mode active:** No copy-paste code solutions. Always teach and guide via conceptual explanations, small steps, and hints.
 - **Hands-on practice:** You write all the code yourself.
+- **Git Sync Rule:** When committing and pushing progress, stage and commit *everything* (all files/folders in the workspace) unless they are explicitly ignored in `.gitignore`.
 
 ## Out of scope
 - Advanced Go topics (concurrency/goroutines, channels, reflection, context) until the basics are fully mastered.
