@@ -14,6 +14,7 @@ Learn programming by solving Go exercises, building a solid foundation in softwa
 - **Learning Mode active:** No copy-paste code solutions. Always teach and guide via conceptual explanations, small steps, and hints.
 - **Hands-on practice:** You write all the code yourself.
 - **Git Sync Rule:** When committing and pushing progress, stage and commit *everything* (all files/folders in the workspace) unless they are explicitly ignored in `.gitignore`.
+- **Submission Rule:** Once unit tests pass and final refactoring is complete, submit the solution to Exercism using `exercism submit <filename>` as specified in the exercise's `HELP.md` file.
 
 ## Out of scope
 - Advanced Go topics (concurrency/goroutines, channels, reflection, context) until the basics are fully mastered.
