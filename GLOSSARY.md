@@ -27,3 +27,12 @@ A placeholder sequence (like `%s`, `%d`, or `%f`) inside a formatting template s
 
 **Float (Floating-point Number)**:
 A data type representing real numbers that contain a decimal point (e.g., `float64` in Go).
+
+**Comparison Operator**:
+Symbols used to compare two values (e.g., `==`, `!=`, `<`, `>`, `<=`, `>=`). The result is always a boolean value (`true` or `false`).
+
+**Logical Operator**:
+Operators used to combine multiple boolean conditions (e.g., `&&` for AND, `||` for OR, `!` for NOT).
+
+**If/Else Statement**:
+A control flow structure that runs a block of code if a condition is true, optionally running alternative blocks (`else if` or `else`) if the condition is false.
