@@ -36,3 +36,6 @@ Operators used to combine multiple boolean conditions (e.g., `&&` for AND, `||` 
 
 **If/Else Statement**:
 A control flow structure that runs a block of code if a condition is true, optionally running alternative blocks (`else if` or `else`) if the condition is false.
+
+**Switch Statement**:
+A control flow structure that matches a value (or boolean conditions) against a list of `case` branches, executing the first match. A `default` case runs if no other case matches. More readable than long `if/else if` chains when checking one value against many possibilities.
