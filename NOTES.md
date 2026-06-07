@@ -5,6 +5,7 @@ _Scratchpad for session notes, user preferences, and working observations._
 ## User Preferences
 
 - **Read Teach Skill first**: At the start of every session, after reading `NOTES.md`, always read `.agents/skills/teach/SKILL.md` and its format files (`LEARNING-RECORD-FORMAT.md`, `RESOURCES-FORMAT.md`, `MISSION-FORMAT.md`) before doing any teaching or updating any learning files.
+- **Read workspace state files**: After reading the teach skill, also read `MISSION.md`, `GLOSSARY.md`, `RESOURCES.md`, and list the latest entries in `learning-records/` to understand current progress.
 - **Submit on confirmation**: Once an exercise is complete and all refactoring is done, wait for the user's explicit confirmation before running `exercism submit`.
 - **Refactor & Review First**: Before submitting to Exercism or staging/pushing to Git, always check if the code can be refactored to be cleaner, more concise, or more idiomatic.
 - **Glossary Organization**: Categorize glossary terms into distinct subheadings: Syntax & Basics, Data Types & Collections, Control Flow, Logic & Operations, Strings & Formatting, and Programming Paradigms & Patterns.

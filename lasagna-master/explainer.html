@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Functions in Depth - Lasagna Master</title>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Theme: Amber / Orange for Lasagna Master */
+            --bg-color: #0f0a00;
+            --card-bg: rgba(30, 20, 5, 0.8);
+            --border-color: rgba(251, 146, 60, 0.2);
+            --text-main: #f3f4f6;
+            --text-muted: #d1d5db;
+            --accent-primary: #f97316;
+            --accent-secondary: #eab308;
+            --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            --badge-rgba: 249, 115, 22;
+            --badge-rgba2: 234, 179, 8;
+
+            /* General utility colors */
+            --code-bg: #1a1000;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+
+            /* Syntax highlighting colors */
+            --syn-keyword: #ff79c6;
+            --syn-type: #8be9fd;
+            --syn-string: #f1fa8c;
+            --syn-number: #bd93f9;
+            --syn-comment: #6272a4;
+            --syn-fn: #50fa7b;
+            --syn-op: #ffb86c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 3rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            background-image:
+                radial-gradient(at 0% 0%, hsla(30, 80%, 8%, 1) 0, transparent 55%),
+                radial-gradient(at 100% 100%, hsla(45, 70%, 10%, 0.2) 0, transparent 55%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 840px;
+        }
+
+        /* Header Styling */
+        header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 150px;
+            background: var(--accent-gradient);
+            filter: blur(100px);
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, rgba(var(--badge-rgba), 0.1) 0%, rgba(var(--badge-rgba2), 0.1) 100%);
+            color: var(--accent-primary);
+            border: 1px solid rgba(var(--badge-rgba), 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.25rem;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Glassmorphic Card Sections */
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px rgba(var(--badge-rgba), 0.05);
+            border-color: rgba(var(--badge-rgba), 0.3);
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.5rem;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 1.6rem;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Callouts */
+        .callout {
+            border-left: 4px solid var(--accent-primary);
+            background: rgba(249, 115, 22, 0.05);
+            padding: 1.25rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .callout.tip {
+            border-left-color: var(--accent-secondary);
+            background: rgba(234, 179, 8, 0.05);
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Code Block styling */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1.25rem 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+
+        p > code {
+            background-color: rgba(255, 255, 255, 0.06);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        /* Go Syntax Highlighting */
+        .kw { color: var(--syn-keyword); font-weight: bold; }
+        .typ { color: var(--syn-type); }
+        .str { color: var(--syn-string); }
+        .num { color: var(--syn-number); }
+        .cmt { color: var(--syn-comment); font-style: italic; }
+        .fn { color: var(--syn-fn); }
+        .op { color: var(--syn-op); }
+
+        /* Interactive Quiz Styles */
+        .quiz-container {
+            margin-top: 1.5rem;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .question-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.75rem;
+            color: var(--text-main);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 1.25rem 1.75rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .option-btn:hover:not(.disabled) {
+            background: rgba(var(--badge-rgba), 0.08);
+            border-color: rgba(var(--badge-rgba), 0.3);
+            color: var(--text-main);
+            transform: translateX(4px);
+        }
+
+        .option-btn.correct {
+            background: rgba(16, 185, 129, 0.15) !important;
+            border-color: var(--success) !important;
+            color: #fff !important;
+        }
+
+        .option-btn.incorrect {
+            background: rgba(239, 68, 68, 0.15) !important;
+            border-color: var(--error) !important;
+            color: #fff !important;
+        }
+
+        .option-btn.disabled {
+            cursor: not-allowed;
+        }
+
+        .option-icon {
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .option-btn.correct .option-icon,
+        .option-btn.incorrect .option-icon {
+            opacity: 1;
+        }
+
+        .feedback {
+            display: none;
+            padding: 1.25rem 1.75rem;
+            border-radius: 14px;
+            margin-top: 1.25rem;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #a7f3d0;
+        }
+
+        .feedback.incorrect {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge">Go Functions</div>
+            <h1>Lasagna Master</h1>
+            <p class="subtitle">Master function parameters, multiple return values, and pass-by-value vs pass-by-reference with slices in Go.</p>
+        </header>
+
+        <!-- Section 1 -->
+        <section id="section-1">
+            <h2>1. Function Parameters & Grouped Types</h2>
+            <p>Every function parameter in Go must have an explicit type — there is no inference for parameters. When two or more adjacent parameters share the same type, you can group them with a single type declaration:</p>
+            <div class="grid">
+                <div>
+                    <h3>Verbose style</h3>
+                    <pre><code><span class="kw">func</span> <span class="fn">Greet</span>(first <span class="typ">string</span>, last <span class="typ">string</span>) <span class="typ">string</span> {
+    <span class="kw">return</span> first <span class="op">+</span> <span class="str">" "</span> <span class="op">+</span> last
+}</code></pre>
+                </div>
+                <div>
+                    <h3>Grouped style</h3>
+                    <pre><code><span class="kw">func</span> <span class="fn">Greet</span>(first, last <span class="typ">string</span>) <span class="typ">string</span> {
+    <span class="kw">return</span> first <span class="op">+</span> <span class="str">" "</span> <span class="op">+</span> last
+}</code></pre>
+                </div>
+            </div>
+            <div class="callout tip">
+                <div class="callout-title">💡 No default values in Go</div>
+                <p style="margin:0;">Go functions have no default parameter values. If you want a "default" behaviour, check for a zero value inside the function body — e.g. if an <code>int</code> argument is <code>0</code>, substitute your own default.</p>
+            </div>
+        </section>
+
+        <!-- Section 2 -->
+        <section id="section-2">
+            <h2>2. Multiple Return Values</h2>
+            <p>Go functions can return more than one value — a feature used heavily in idiomatic Go, especially for returning a result alongside an error. Multiple return types are wrapped in parentheses:</p>
+            <pre><code><span class="kw">func</span> <span class="fn">Quantities</span>(layers []<span class="typ">string</span>) (<span class="typ">int</span>, <span class="typ">float64</span>) {
+    <span class="cmt">// returns noodles (int) and sauce (float64)</span>
+    <span class="kw">return</span> noodles, sauce
+}
+
+<span class="cmt">// Calling it — capture both return values:</span>
+noodles, sauce := <span class="fn">Quantities</span>(layers)</code></pre>
+            <p>If you only need one of the return values, discard the other with <code>_</code>:</p>
+            <pre><code>noodles, _ := <span class="fn">Quantities</span>(layers) <span class="cmt">// ignore sauce</span></code></pre>
+            <div class="callout">
+                <div class="callout-title">⚠️ Named return values</div>
+                <p style="margin:0;">Go also supports <strong>named return values</strong>. You name the return variables in the signature and use a bare <code>return</code> at the end. This can improve readability for complex functions but should be used sparingly as it can reduce clarity.</p>
+                <pre style="margin-top:0.75rem;margin-bottom:0;"><code><span class="kw">func</span> <span class="fn">Quantities</span>(layers []<span class="typ">string</span>) (noodles <span class="typ">int</span>, sauce <span class="typ">float64</span>) {
+    <span class="cmt">// noodles and sauce are pre-declared</span>
+    <span class="kw">return</span> <span class="cmt">// returns noodles and sauce implicitly</span>
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 3 -->
+        <section id="section-3">
+            <h2>3. Pass-by-Value vs Pass-by-Reference</h2>
+            <p>In Go, <strong>all arguments are passed by value</strong> — a copy is made. For primitive types like <code>int</code> or <code>string</code>, this means the original is never changed inside the function:</p>
+            <pre><code><span class="kw">func</span> <span class="fn">Double</span>(n <span class="typ">int</span>) <span class="typ">int</span> {
+    n = n <span class="op">*</span> <span class="num">2</span>
+    <span class="kw">return</span> n
+}
+
+x := <span class="num">5</span>
+result := <span class="fn">Double</span>(x)
+<span class="cmt">// result == 10, x is still 5</span></code></pre>
+
+            <h3>Slices are different</h3>
+            <p>Slices, maps, and channels are <strong>reference types</strong>. When you pass a slice to a function, you're passing a reference to the underlying array — <strong>not</strong> a full copy. Modifications inside the function affect the original:</p>
+            <pre><code><span class="kw">func</span> <span class="fn">SetFirst</span>(s []<span class="typ">string</span>, val <span class="typ">string</span>) {
+    s[<span class="num">0</span>] = val <span class="cmt">// modifies the original!</span>
+}
+
+list := []<span class="typ">string</span>{<span class="str">"a"</span>, <span class="str">"b"</span>, <span class="str">"c"</span>}
+<span class="fn">SetFirst</span>(list, <span class="str">"z"</span>)
+<span class="cmt">// list is now ["z", "b", "c"]</span></code></pre>
+            <div class="callout tip">
+                <div class="callout-title">💡 When you need a true copy</div>
+                <p style="margin:0;">To avoid mutating the original slice, make a copy first using <code>append([]T(nil), original...)</code> or the built-in <code>copy()</code> function before modifying it.</p>
+            </div>
+        </section>
+
+        <!-- Self-Check Quiz -->
+        <section id="quiz">
+            <h2>Self-Check Quiz</h2>
+            <div class="quiz-container">
+                <!-- Question 1 -->
+                <div class="question-card" id="q1">
+                    <div class="question-text">1. A function receives an <code>avgTime int</code> parameter. If no time is provided by the caller, <code>avgTime</code> will be <code>0</code>. How should you handle this inside the function?</div>
+                    <div class="options-list">
+                        <button class="option-btn" onclick="checkAnswer('q1', 0, false)">
+                            <span>A) Define avgTime with a default value in the function signature.</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q1', 1, true)">
+                            <span>B) Check if avgTime == 0 inside the function body and set it to 2.</span>
+                            <span class="option-icon">✓</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q1', 2, false)">
+                            <span>C) Use a variadic parameter so the argument is optional.</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                    </div>
+                    <div class="feedback correct" id="q1-fb-correct">
+                        🎉 Correct! Go has no default parameter values, so you check for the zero value (<code>0</code> for int) inside the function body and substitute your default manually.
+                    </div>
+                    <div class="feedback incorrect" id="q1-fb-incorrect">
+                        ❌ Go does not support default parameter values. The idiomatic solution is to check for the zero value of the type and apply the default yourself inside the function.
+                    </div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question-card" id="q2">
+                    <div class="question-text">2. A function returns <code>(int, float64)</code>. How do you capture only the float64 return value and discard the int?</div>
+                    <div class="options-list">
+                        <button class="option-btn" onclick="checkAnswer('q2', 0, false)">
+                            <span>A) result := myFunc()</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q2', 1, true)">
+                            <span>B) _, result := myFunc()</span>
+                            <span class="option-icon">✓</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q2', 2, false)">
+                            <span>C) result := myFunc()[1]</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                    </div>
+                    <div class="feedback correct" id="q2-fb-correct">
+                        🎉 Correct! The blank identifier <code>_</code> discards an unwanted return value. You must always account for every return value — you can't simply ignore one without <code>_</code>.
+                    </div>
+                    <div class="feedback incorrect" id="q2-fb-incorrect">
+                        ❌ Go requires you to handle every return value. Use <code>_</code> to explicitly discard the ones you don't need: <code>_, result := myFunc()</code>.
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" id="q3">
+                    <div class="question-text">3. You pass a <code>[]string</code> slice to a function and modify an element inside. What happens to the original slice?</div>
+                    <div class="options-list">
+                        <button class="option-btn" onclick="checkAnswer('q3', 0, false)">
+                            <span>A) The original is unchanged — slices are copied when passed.</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 1, true)">
+                            <span>B) The original is modified — slices are reference types.</span>
+                            <span class="option-icon">✓</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 2, false)">
+                            <span>C) It depends on whether you use a pointer in the signature.</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                    </div>
+                    <div class="feedback correct" id="q3-fb-correct">
+                        🎉 Correct! Slices hold a reference to an underlying array. Passing a slice to a function passes that reference, so any element modifications affect the original — no explicit pointer needed.
+                    </div>
+                    <div class="feedback incorrect" id="q3-fb-incorrect">
+                        ❌ Slices are reference types in Go. Even without a <code>*</code> pointer, modifying elements of a slice inside a function affects the original slice the caller holds.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Built with ❤️ for Lasagna Master. Track: Go | Exercise: Lasagna Master</p>
+        </footer>
+    </div>
+
+    <script>
+        function checkAnswer(questionId, selectedIdx, isCorrect) {
+            const questionCard = document.getElementById(questionId);
+            const options = questionCard.querySelectorAll('.option-btn');
+
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                opt.disabled = true;
+            });
+
+            const selectedOpt = options[selectedIdx];
+            if (isCorrect) {
+                selectedOpt.classList.add('correct');
+                questionCard.querySelector('.feedback.correct').style.display = 'block';
+            } else {
+                selectedOpt.classList.add('incorrect');
+                questionCard.querySelector('.feedback.incorrect').style.display = 'block';
+
+                options.forEach((opt, idx) => {
+                    if (idx !== selectedIdx) {
+                        if (opt.outerHTML.includes('true')) {
+                            opt.classList.add('correct');
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
