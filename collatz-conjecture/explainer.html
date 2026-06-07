@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Concept Explainer: Collatz Conjecture</title>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Theme Custom Colors - Golden Mathematical Theme */
+            --bg-color: #0b0f19;
+            --card-bg: rgba(23, 28, 41, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-primary: #f59e0b; /* Amber */
+            --accent-secondary: #ec4899; /* Pink */
+            --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            --badge-rgba: 245, 158, 11;
+            --badge-rgba2: 236, 72, 153;
+            
+            /* General utility colors */
+            --code-bg: #111827;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 3rem 1.5rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 840px;
+        }
+
+        /* Header Styling */
+        header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 150px;
+            background: var(--accent-gradient);
+            filter: blur(100px);
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, rgba(var(--badge-rgba), 0.1) 0%, rgba(var(--badge-rgba2), 0.1) 100%);
+            color: var(--accent-primary);
+            border: 1px solid rgba(var(--badge-rgba), 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.25rem;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Glassmorphic Card Sections */
+        section, .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        section:hover, .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px rgba(var(--badge-rgba), 0.05);
+            border-color: rgba(var(--badge-rgba), 0.3);
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.5rem;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 1.6rem;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.25rem;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Grid Layout (Prevents Overflow) */
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Citations & Links */
+        .citation {
+            color: var(--accent-primary);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--accent-primary);
+            transition: color 0.2s, border-bottom 0.2s;
+        }
+
+        .citation:hover {
+            color: var(--accent-secondary);
+            border-bottom-color: var(--accent-secondary);
+        }
+
+        /* Code Block styling */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1.25rem 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+
+        p > code {
+            background-color: rgba(255, 255, 255, 0.06);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        /* Try This / Notes / Tip Callouts */
+        .callout {
+            border-left: 4px solid var(--accent-primary);
+            background: rgba(59, 130, 246, 0.05);
+            padding: 1.25rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .callout.tip {
+            border-left-color: var(--accent-secondary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Interactive Quiz Styles */
+        .quiz-container {
+            margin-top: 1.5rem;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        .question-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.75rem;
+            color: var(--text-main);
+        }
+
+        .options-list {
+            list-style: none;
+            margin-left: 0;
+            margin-bottom: 0;
+        }
+
+        .option-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .option-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(var(--badge-rgba), 0.3);
+            color: var(--text-main);
+            transform: translateX(4px);
+        }
+
+        .option-item.selected {
+            background: rgba(var(--badge-rgba), 0.08);
+            border-color: var(--accent-primary);
+            color: var(--text-main);
+        }
+
+        .option-item.correct {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+            color: #d1fae5;
+        }
+
+        .option-item.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--error);
+            color: #fee2e2;
+        }
+
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-box.correct {
+            display: block;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #a7f3d0;
+        }
+
+        .feedback-box.incorrect {
+            display: block;
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        /* Try This Interactive Playground Mockup */
+        .playground-card {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 18px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        .collatz-visualizer {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .visualizer-input-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .visualizer-input {
+            background: var(--code-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            flex: 1;
+        }
+
+        .visualizer-button {
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .visualizer-button:hover {
+            opacity: 0.9;
+        }
+
+        .visualizer-button:active {
+            transform: scale(0.98);
+        }
+
+        .visualizer-results {
+            background: var(--code-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.25rem;
+            min-height: 80px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .step-pill {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin: 0.2rem;
+            font-size: 0.85rem;
+        }
+
+        .step-arrow {
+            color: var(--accent-primary);
+            margin: 0 0.25rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge">Conditionals & Loops</div>
+            <h1>Collatz Conjecture</h1>
+            <p class="subtitle">Exploring the classic mathematical sequence, Go's simplified loops, and safe error handling.</p>
+        </header>
+
+        <!-- Section 1: The Math -->
+        <section id="the-rules">
+            <h2>1. The Collatz Conjecture Rules</h2>
+            <p>
+                The <a href="https://en.wikipedia.org/wiki/Collatz_conjecture" class="citation" target="_blank">Collatz Conjecture</a> is a famous mathematical puzzle. It says that if you start with any positive integer <code>n</code> and repeatedly apply the following rules, you will eventually reach the number 1:
+            </p>
+            <ul>
+                <li>If the number is <strong>even</strong>: divide it by 2 (<code>n / 2</code>).</li>
+                <li>If the number is <strong>odd</strong>: multiply it by 3 and add 1 (<code>3 * n + 1</code>).</li>
+            </ul>
+            <p>
+                In Go, we can check if a number is even or odd using the <strong>modulo operator (<code>%</code>)</strong>:
+            </p>
+            <pre><code>if n % 2 == 0 {
+    // n is even
+} else {
+    // n is odd
+}</code></pre>
+            
+            <div class="callout tip">
+                <div class="callout-title">💡 Did You Know?</div>
+                <p style="margin-bottom: 0;">No one has ever mathematically proven that <em>every</em> positive integer reaches 1, although computers have checked numbers up to 2<sup>68</sup>! It's one of the most famous unsolved problems in mathematics.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Loops -->
+        <section id="go-loops">
+            <h2>2. Go's "While" Loop</h2>
+            <p>
+                To count the steps to reach 1, we must repeatedly apply our rules as long as the current number is greater than 1. This is a classic "conditional loop" (often called a <code>while</code> loop).
+            </p>
+            <p>
+                While many languages have a dedicated <code>while</code> keyword, Go keeps things minimalist. Go only has one loop construct: the <a href="https://go.dev/tour/flowcontrol/2" class="citation" target="_blank"><code>for</code> loop</a>.
+            </p>
+            <p>
+                To write a "while-style" loop in Go, we simply omit the initialization and post statements, leaving only the condition:
+            </p>
+            <pre><code>// This loop runs as long as n is greater than 1
+for n > 1 {
+    if n % 2 == 0 {
+        n = n / 2
+    } else {
+        n = 3 * n + 1
+    }
+    // Increment steps counter here...
+}</code></pre>
+            <p>
+                This structure is elegant and clean. Once the condition <code>n > 1</code> becomes false (i.e., when <code>n</code> reaches 1), the loop exits automatically.
+            </p>
+        </section>
+
+        <!-- Section 3: Error Handling -->
+        <section id="errors">
+            <h2>3. Introducing Error Handling</h2>
+            <p>
+                The Collatz Conjecture is only defined for <strong>positive integers</strong> (<code>n &ge; 1</code>). If the input is <code>0</code> or negative, the process is invalid. In Go, functions represent failure by returning an <code>error</code> type as their final return value.
+            </p>
+            <p>
+                In the function signature:
+                <pre><code>func CollatzConjecture(n int) (int, error)</code></pre>
+                The function returns two values:
+                <ol>
+                    <li>An <code>int</code> representing the step count.</li>
+                    <li>An <code>error</code> representing whether an error occurred.</li>
+                </ol>
+            </p>
+            
+            <h3>How to Return Errors</h3>
+            <p>
+                We can create a simple error using Go's built-in <a href="https://pkg.go.dev/errors" class="citation" target="_blank"><code>errors</code> package</a>:
+            </p>
+            <pre><code>import "errors"
+
+// In your function:
+if n <= 0 {
+    return 0, errors.New("input must be a positive integer")
+}</code></pre>
+            <p>
+                If the calculation succeeds and no error occurs, we return the step count alongside <code>nil</code> (which represents the absence of an error):
+            </p>
+            <pre><code>return steps, nil</code></pre>
+        </section>
+
+        <!-- Visualizer Playground -->
+        <section id="playground">
+            <h2>Interactive Collatz Calculator</h2>
+            <p>Enter a starting number to visualize the steps and path to 1:</p>
+            <div class="collatz-visualizer">
+                <div class="visualizer-input-group">
+                    <input type="number" id="start-num" class="visualizer-input" value="12" placeholder="e.g. 12">
+                    <button class="visualizer-button" onclick="calculateCollatz()">Calculate</button>
+                </div>
+                <div id="visualizer-results" class="visualizer-results">Click "Calculate" to trace the path...</div>
+            </div>
+        </section>
+
+        <!-- Self-Check Quiz -->
+        <section id="quiz">
+            <h2>Self-Check Quiz</h2>
+            <div class="quiz-container">
+                <!-- Question 1 -->
+                <div class="question-card" id="q1">
+                    <div class="question-text">1. How do you write a "while" style loop in Go?</div>
+                    <ul class="options-list">
+                        <li class="option-item" onclick="checkAnswer(1, 0, false)"><code>while condition { }</code></li>
+                        <li class="option-item" onclick="checkAnswer(1, 1, true)"><code>for condition { }</code></li>
+                        <li class="option-item" onclick="checkAnswer(1, 2, false)"><code>loop condition { }</code></li>
+                    </ul>
+                    <div class="feedback-box" id="fb1"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="question-card" id="q2">
+                    <div class="question-text">2. How does Go represent that a function executed successfully without errors?</div>
+                    <ul class="options-list">
+                        <li class="option-item" onclick="checkAnswer(2, 0, false)">By returning <code>false</code> for the error parameter</li>
+                        <li class="option-item" onclick="checkAnswer(2, 1, false)">By throwing an exception</li>
+                        <li class="option-item" onclick="checkAnswer(2, 2, true)">By returning <code>nil</code> as the error value</li>
+                    </ul>
+                    <div class="feedback-box" id="fb2"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" id="q3">
+                    <div class="question-text">3. Which package is imported to create basic static errors using <code>New()</code>?</div>
+                    <ul class="options-list">
+                        <li class="option-item" onclick="checkAnswer(3, 0, false)"><code>fmt</code></li>
+                        <li class="option-item" onclick="checkAnswer(3, 1, true)"><code>errors</code></li>
+                        <li class="option-item" onclick="checkAnswer(3, 2, false)"><code>err</code></li>
+                    </ul>
+                    <div class="feedback-box" id="fb3"></div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Built with ❤️ for Collatz Conjecture. Track: Go | Exercise: Collatz Conjecture</p>
+        </footer>
+    </div>
+
+    <script>
+        function calculateCollatz() {
+            const inputVal = parseInt(document.getElementById('start-num').value);
+            const resultsDiv = document.getElementById('visualizer-results');
+            
+            if (isNaN(inputVal) || inputVal <= 0) {
+                resultsDiv.innerHTML = `<span style="color: var(--error);">Error: Input must be a positive integer (&gt; 0)</span>`;
+                return;
+            }
+
+            let n = inputVal;
+            let steps = 0;
+            let path = [n];
+
+            while (n > 1) {
+                if (n % 2 === 0) {
+                    n = n / 2;
+                } else {
+                    n = 3 * n + 1;
+                }
+                path.push(n);
+                steps++;
+            }
+
+            let html = `<strong>Starting number:</strong> ${inputVal}<br>`;
+            html += `<strong>Total steps:</strong> ${steps}<br><br>`;
+            html += `<strong>Path:</strong><br>`;
+            
+            path.forEach((val, idx) => {
+                html += `<span class="step-pill">${val}</span>`;
+                if (idx < path.length - 1) {
+                    html += `<span class="step-arrow">➜</span>`;
+                }
+            });
+
+            resultsDiv.innerHTML = html;
+        }
+
+        const answers = {
+            1: { correct: 1, explanation: "Correct! Go does not have a 'while' keyword. A loop of the form 'for condition { }' acts as a while loop." },
+            2: { correct: 2, explanation: "Correct! 'nil' is the zero value for interfaces and pointers in Go, used to indicate that no error occurred." },
+            3: { correct: 1, explanation: "Correct! You import the standard library package 'errors' and call 'errors.New(\"error message\")' to build standard static errors." }
+        };
+
+        function checkAnswer(questionNum, optionIdx, isCorrect) {
+            const card = document.getElementById(`q${questionNum}`);
+            const options = card.querySelectorAll('.option-item');
+            const feedback = document.getElementById(`fb${questionNum}`);
+            const state = answers[questionNum];
+
+            options.forEach((item, idx) => {
+                item.classList.remove('selected', 'correct', 'incorrect');
+                if (idx === state.correct) {
+                    item.classList.add('correct');
+                } else if (idx === optionIdx) {
+                    item.classList.add('incorrect');
+                }
+            });
+
+            feedback.className = 'feedback-box ' + (isCorrect ? 'correct' : 'incorrect');
+            feedback.innerText = state.explanation;
+        }
+
+        // Run initial calculation
+        calculateCollatz();
+    </script>
+</body>
+</html>

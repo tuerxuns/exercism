@@ -30,6 +30,9 @@ A Go function feature allowing more than one value to be returned from a single 
 **Float (Floating-point Number)**:
 A data type representing real numbers that contain a decimal point (e.g., `float64` in Go).
 
+**Error**:
+A built-in interface type in Go used to represent an abnormal state or failure. Functions commonly return an `error` as their last return value, which is `nil` if the operation succeeded, or a non-nil value created using `errors.New` or `fmt.Errorf` if it failed.
+
 **Struct**:
 A user-defined type that represents a collection of fields grouped together under a single name, used to define custom data models.
 

@@ -19,6 +19,8 @@
   How to write while-style loops in Go by omitting init and post. Use for: simplified loops.
 - [Official Website: A Tour of Go - Structs](https://go.dev/tour/moretypes/2)
   Interactive introduction to declaring and using Go structs. Use for: learning basic struct modeling.
+- [Official Website: A Tour of Go - Errors](https://go.dev/tour/methods/19)
+  Interactive introduction to how Go represents errors using the built-in error interface. Use for: understanding basic error return values.
 
 ### Standard Library Packages
 - [Standard Library: strings package](https://pkg.go.dev/strings)
@@ -27,6 +29,9 @@
 ### Deep-Dives & Blogs
 - [Official blog: Go Slices: usage and internals](https://go.dev/blog/slices-intro)
   Deep dive into slice data structures, length/capacity headers, and how append works. Use for: understanding slice memory management.
+- [Official Blog: Working with Errors in Go 1.13](https://go.dev/blog/go1.13-errors)
+  Official guidelines on how to construct, return, and inspect errors in Go. Use for: learning idiomatic error handling.
+
 
 
 ## Wisdom (Communities)
