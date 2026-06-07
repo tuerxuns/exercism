@@ -378,7 +378,7 @@
         <header>
             <div class="badge">Go Loops</div>
             <h1>For Loops in Go</h1>
-            <p class="subtitle">Master loop syntax, iterating over slices by index, custom steps, and creating while-like loops in Go.</p>
+            <p class="subtitle">Master loop syntax, iterating over slices with <code>range</code>, custom steps, and modern Go 1.22+ range-over-integer patterns.</p>
         </header>
 
         <!-- Section 1 -->
@@ -408,47 +408,55 @@
 
         <!-- Section 2 -->
         <section id="section-2">
-            <h2>2. Iterating Over Slices by Index</h2>
+            <h2>2. Iterating Over Slices with range</h2>
             <p>
-                A very common use of for loops is to traverse through elements of a slice using index access. 
-                The loop counter starts at <code>0</code> and increments up to, but not including, the length of the slice (<code>len(slice)</code>).
+                The most idiomatic way to loop over a slice in Go is using <code>range</code>. It gives you both the index and the value at each step:
             </p>
             <pre><code>birds := []<span class="typ">int</span>{<span class="num">2</span>, <span class="num">5</span>, <span class="num">0</span>, <span class="num">7</span>}
 
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(birds); i++ {
-    fmt.<span class="fn">Printf</span>(<span class="str">"Day %d: counted %d birds\n"</span>, i, birds[i])
+<span class="kw">for</span> i, count := <span class="kw">range</span> birds {
+    fmt.<span class="fn">Printf</span>(<span class="str">"Day %d: counted %d birds\n"</span>, i, count)
 }</code></pre>
-            <h3>Slicing a Range Before Looping</h3>
             <p>
-                If you only want to loop through a subset of a slice (e.g. a specific week's worth of data), you can take a slice of the slice first:
+                If you only need the value and not the index, discard the index using the blank identifier <code>_</code>:
             </p>
-            <pre><code><span class="cmt">// Get only the second week (indices 7 to 13)</span>
-weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(weekTwo); i++ {
-    <span class="cmt">// Process weekTwo[i]</span>
+            <pre><code><span class="kw">for</span> _, count := <span class="kw">range</span> birds {
+    <span class="cmt">// use count directly — no index needed</span>
+    total += count
 }</code></pre>
+            <h3>Range Over Integer (Go 1.22+)</h3>
+            <p>
+                Since Go 1.22, you can also range directly over an integer. This is a clean modern alternative to the classic three-component loop when you just need a counter:
+            </p>
+            <pre><code><span class="cmt">// Prints 0, 1, 2, 3, 4</span>
+<span class="kw">for</span> i := <span class="kw">range</span> <span class="num">5</span> {
+    fmt.<span class="fn">Println</span>(i)
+}</code></pre>
+            <div class="callout tip">
+                <div class="callout-title">💡 Which style should I use?</div>
+                <p style="margin: 0;">Use <code>for _, v := range slice</code> when you want values from a slice. Use <code>for i := range n</code> when you just need a counter. Use the classic three-component loop when you need fine-grained control over the step size (e.g. <code>i += 2</code>).</p>
+            </div>
         </section>
 
         <!-- Section 3 -->
         <section id="section-3">
-            <h2>3. Custom Steps (Alternate Increments)</h2>
+            <h2>3. Custom Steps &amp; While-Style Loops</h2>
             <p>
-                The <code>post</code> component can be modified to step through the collection differently. Instead of adding 1 (<code>i++</code>), you can add any step size, such as 2 (<code>i += 2</code>).
-            </p>
-            <p>
-                This allows you to visit every second element, starting from index 0:
+                When you need to visit every <em>second</em> element (e.g. fix alternate day counts), the three-component loop lets you control the step size precisely:
             </p>
             <pre><code>numbers := []<span class="typ">int</span>{<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>, <span class="num">60</span>}
 
 <span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(numbers); i += <span class="num">2</span> {
-    <span class="cmt">// i will be 0, 2, 4</span>
-    fmt.<span class="fn">Println</span>(numbers[i]) <span class="cmt">// Output: 10, 30, 50</span>
+    <span class="cmt">// i visits: 0, 2, 4</span>
+    numbers[i]++ <span class="cmt">// increment every alternate element</span>
 }</code></pre>
+            <p>
+                <code>range</code> always steps by 1, so the classic loop is the right choice when you need a different step size.
+            </p>
             <div class="callout tip">
-                <div class="callout-title">💡 Remember: While loops in Go</div>
+                <div class="callout-title">💡 While-style loops in Go</div>
                 <p style="margin: 0;">
-                    Since Go has no <code>while</code> keyword, you can create a while-loop by omitting the <code>init</code> and <code>post</code> statements:
+                    Since Go has no <code>while</code> keyword, omit the <code>init</code> and <code>post</code> to get a while-style loop:
                 </p>
                 <pre style="margin-bottom:0;"><code>sum := <span class="num">1</span>
 <span class="kw">for</span> sum < <span class="num">1000</span> {
@@ -466,48 +474,73 @@ weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
                     <div class="question-text">1. Which of the following is a valid Go loop declaration?</div>
                     <div class="options-list">
                         <button class="option-btn" onclick="checkAnswer('q1', 0, false)">
-                            <span>A) for (i := 0; i < 5; i++) { }</span>
+                            <span>A) for (i := 0; i &lt; 5; i++) { }</span>
                             <span class="option-icon">❌</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 1, true)">
-                            <span>B) for i := 0; i < 5; i++ { }</span>
+                            <span>B) for i := 0; i &lt; 5; i++ { }</span>
                             <span class="option-icon">✓</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 2, false)">
-                            <span>C) while i < 5 { }</span>
+                            <span>C) while i &lt; 5 { }</span>
                             <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q1-fb-correct">
-                        🎉 Correct! Go does not use parentheses in loop headers, and <code>while</code> is not a keyword.
+                        🎉 Correct! Go does not use parentheses in loop headers, and <code>while</code> is not a keyword in Go.
                     </div>
                     <div class="feedback incorrect" id="q1-fb-incorrect">
-                        ❌ Incorrect. Remember, Go has no <code>while</code> keyword and does not allow parentheses in loop headers.
+                        ❌ Incorrect. Go has no <code>while</code> keyword and does not allow parentheses around loop headers.
                     </div>
                 </div>
 
                 <!-- Question 2 -->
                 <div class="question-card" id="q2">
-                    <div class="question-text">2. How would you start a loop to update every second element in a slice, starting from the first element (index 0)?</div>
+                    <div class="question-text">2. What does <code>for _, v := range birds</code> give you on each iteration?</div>
                     <div class="options-list">
                         <button class="option-btn" onclick="checkAnswer('q2', 0, false)">
-                            <span>A) for i := 0; i < len(slice); i++</span>
+                            <span>A) Only the index of each element.</span>
                             <span class="option-icon">❌</span>
                         </button>
-                        <button class="option-btn" onclick="checkAnswer('q2', 1, false)">
-                            <span>B) for i := 1; i < len(slice); i += 2</span>
-                            <span class="option-icon">❌</span>
-                        </button>
-                        <button class="option-btn" onclick="checkAnswer('q2', 2, true)">
-                            <span>C) for i := 0; i < len(slice); i += 2</span>
+                        <button class="option-btn" onclick="checkAnswer('q2', 1, true)">
+                            <span>B) Only the value of each element (index discarded).</span>
                             <span class="option-icon">✓</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q2', 2, false)">
+                            <span>C) A copy of the entire slice.</span>
+                            <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q2-fb-correct">
-                        🎉 Correct! Starting at index 0 and incrementing by 2 (<code>i += 2</code>) visits indices 0, 2, 4, etc.
+                        🎉 Correct! The blank identifier <code>_</code> discards the index, leaving you with just the value <code>v</code> on each iteration.
                     </div>
                     <div class="feedback incorrect" id="q2-fb-incorrect">
-                        ❌ Incorrect. Index 0 is the first element, and <code>i += 2</code> skips every second element. <code>i++</code> visits every element, and starting at index 1 would miss the first element.
+                        ❌ Not quite. <code>range</code> produces both an index and a value. Using <code>_</code> throws away the index so you only work with the value.
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" id="q3">
+                    <div class="question-text">3. In Go 1.22+, what does <code>for i := range 5</code> produce?</div>
+                    <div class="options-list">
+                        <button class="option-btn" onclick="checkAnswer('q3', 0, false)">
+                            <span>A) i takes values 1, 2, 3, 4, 5</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 1, true)">
+                            <span>B) i takes values 0, 1, 2, 3, 4</span>
+                            <span class="option-icon">✓</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 2, false)">
+                            <span>C) A compile error — you can't range over an integer.</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                    </div>
+                    <div class="feedback correct" id="q3-fb-correct">
+                        🎉 Correct! Since Go 1.22, ranging over an integer <code>n</code> produces values from <code>0</code> up to, but not including, <code>n</code> — just like a classic <code>for i := 0; i &lt; n; i++</code>.
+                    </div>
+                    <div class="feedback incorrect" id="q3-fb-incorrect">
+                        ❌ Not quite. Go 1.22 introduced range-over-integer. It starts at <code>0</code> and counts up to (but not including) the given number — so <code>range 5</code> gives <code>0, 1, 2, 3, 4</code>.
                     </div>
                 </div>
             </div>

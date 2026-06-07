@@ -4,6 +4,7 @@ _Scratchpad for session notes, user preferences, and working observations._
 
 ## User Preferences
 
+- **Read Teach Skill first**: At the start of every session, after reading `NOTES.md`, always read `.agents/skills/teach/SKILL.md` and its format files (`LEARNING-RECORD-FORMAT.md`, `RESOURCES-FORMAT.md`, `MISSION-FORMAT.md`) before doing any teaching or updating any learning files.
 - **Submit on confirmation**: Once an exercise is complete and all refactoring is done, wait for the user's explicit confirmation before running `exercism submit`.
 - **Refactor & Review First**: Before submitting to Exercism or staging/pushing to Git, always check if the code can be refactored to be cleaner, more concise, or more idiomatic.
 - **Glossary Organization**: Categorize glossary terms into distinct subheadings: Syntax & Basics, Data Types & Collections, Control Flow, Logic & Operations, Strings & Formatting, and Programming Paradigms & Patterns.
@@ -18,3 +19,7 @@ _Scratchpad for session notes, user preferences, and working observations._
   - Divide sections using individual `<section>` cards with hover transform effects.
   - Standardize subheadings (`h2`, `h3`), callouts, code blocks (prevent layout breaks via `minmax(0, 1fr)` columns), and self-check quiz containers.
   - Standardize the footer format: `Built with ❤️ for [Exercise Name]. Track: Go | Exercise: [Exercise Name]`.
+- **Modern Go Features**: Always use modern Go idioms and features in explainers, regardless of what the exercise README or instructions show. Exercism's official docs can be outdated. Key examples:
+  - Prefer `for _, v := range slice` over manual index loops where possible.
+  - Use `for i := range n` (Go 1.22+) instead of `for i := 0; i < n; i++` for simple counters.
+  - Always check the `go.mod` version in the exercise directory to confirm which features are available.

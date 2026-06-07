@@ -33,6 +33,12 @@ A user-defined type that represents a collection of fields grouped together unde
 **Slice**:
 A dynamically-sized, flexible view into the elements of an underlying array, consisting of a pointer, a length, and a capacity.
 
+**Slice Aliasing**:
+When two slice variables share the same underlying array (e.g. `s2 := s1`), so mutations through one are visible through the other. Use `append([]T(nil), s...)` or `copy` to make a true independent copy.
+
+**Blank Identifier (`_`)**:
+A special write-only variable name in Go used to discard a value you don't need (e.g. the index in `for _, v := range slice`).
+
 ## Control Flow
 
 **If/Else Statement**:
@@ -40,6 +46,12 @@ A control flow structure that runs a block of code if a condition is true, optio
 
 **Switch Statement**:
 A control flow structure that matches a value (or boolean conditions) against a list of `case` branches, executing the first match. A `default` case runs if no other case matches. More readable than long `if/else if` chains when checking one value against many possibilities.
+
+**For Loop**:
+Go's only looping construct, used for all repetition. The standard form is `for init; condition; post { }`. It can also act as a while-style loop (`for condition { }`) or an infinite loop (`for { }`).
+
+**Range**:
+A keyword used with `for` to iterate over slices, arrays, maps, strings, channels, or (Go 1.22+) integers. For slices it yields the index and value on each iteration: `for i, v := range slice`. Either can be discarded with `_`.
 
 ## Logic & Operations
 
