@@ -39,3 +39,13 @@ A control flow structure that runs a block of code if a condition is true, optio
 
 **Switch Statement**:
 A control flow structure that matches a value (or boolean conditions) against a list of `case` branches, executing the first match. A `default` case runs if no other case matches. More readable than long `if/else if` chains when checking one value against many possibilities.
+
+**Slice**:
+A dynamically-sized, flexible view into the elements of an underlying array, consisting of a pointer, a length, and a capacity.
+
+**Variadic Function**:
+A function that accepts a variable number of arguments for its final parameter, which is represented inside the function as a slice.
+
+**Spread Operator (`...`)**:
+An ellipsis syntax used to either define a variadic parameter in a function signature or unpack a slice's elements to pass them individually to a variadic function.
+

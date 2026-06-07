@@ -4,4 +4,4 @@ _Scratchpad for session notes, user preferences, and working observations._
 
 ## User Preferences
 
-- **Auto-submit**: Once an exercise is complete and all refactoring is done, always run `exercism submit` automatically without being asked.
+- **Refactor & Review First**: Before submitting to Exercism or staging/pushing to Git, always check if the code can be refactored to be cleaner, more concise, or more idiomatic.
