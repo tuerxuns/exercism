@@ -1,12 +1,17 @@
-# Starting Lasagna Master
+# Mastering Functions and Multiple Return Values
 
-The student is beginning `lasagna-master` to deepen their understanding of Go functions: parameter grouping, multiple return values, default value patterns, and pass-by-value vs pass-by-reference behaviour with slices.
+The student successfully solved the `lasagna-master` exercise, demonstrating solid understanding of functions with multiple return values, the default value fallback pattern, slice mutation in-place, and creating independent slice copies.
 
 ## Evidence
 
-- Reviewed the exercise brief and identified the function patterns to practice: parameter grouping, multiple returns, and default values.
+- Implemented `PreparationTime` using a default value fallback pattern when time is 0.
+- Implemented `Quantities` returning two values (`int` and `float64`) by iterating over layers.
+- Implemented `AddSecretIngredient` modifying a slice in-place by replacing the last element.
+- Implemented `ScaleRecipe` returning a new scaled slice without modifying the original.
+- All unit tests passed successfully.
 
 ## Implications
 
-- Builds directly on slice knowledge from bird-watcher and card-tricks.
-- Introduces multiple return values, which are common in idiomatic Go (especially for error handling later).
+- Confident with multiple return values and parameter typing in Go.
+- Understands when to mutate a slice in-place vs create a new copy to protect the original.
+- Ready for exercises involving maps, pointers, or more complex data structures.

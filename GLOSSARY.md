@@ -22,6 +22,9 @@ A classification of data that determines what values a variable can hold and wha
 **Doc Comment**:
 A code comment starting with `//` or `/*` placed immediately before a declaration (like a package, type, or function) without any intervening empty lines, which is used to generate official API documentation.
 
+**Multiple Return Values**:
+A Go function feature allowing more than one value to be returned from a single function. Declared as comma-separated types in parentheses in the signature (e.g. `func Quantities(layers []string) (int, float64)`), and returned as a comma-separated list after `return`.
+
 ## Data Types & Collections
 
 **Float (Floating-point Number)**:
@@ -82,3 +85,6 @@ An idiomatic Go pattern (typically named `New*`) used to initialize and return a
 
 **Value Semantics**:
 A programming paradigm where data is copied when passed to functions or returned, preventing unintended side effects from shared mutable state.
+
+**Default Value Fallback**:
+A common Go pattern where a function checks if a parameter is its zero value and substitutes a sensible default instead. Since Go has no built-in default parameter values, this pattern simulates them (e.g. `if time == 0 { timePerLayer = 2 }`).
