@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Loops in Go - Interactive Explainer</title>
+    <title>Go Core Concepts: Gopher's Gorgeous Lasagna</title>
     <!-- Google Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,19 +11,19 @@
     <style>
         :root {
             /* Theme Custom Colors */
-            --bg-color: #0b0f19;
-            --card-bg: rgba(23, 28, 41, 0.6);
-            --border-color: rgba(255, 255, 255, 0.08);
+            --bg-color: #090714;
+            --card-bg: rgba(21, 16, 36, 0.8);
+            --border-color: rgba(139, 92, 246, 0.2);
             --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --accent-primary: #10b981;
-            --accent-secondary: #06b6d4;
+            --text-muted: #d1d5db;
+            --accent-primary: #8b5cf6;
+            --accent-secondary: #ec4899;
             --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            --badge-rgba: 16, 185, 129;
-            --badge-rgba2: 6, 182, 212;
+            --badge-rgba: 139, 92, 246;
+            --badge-rgba2: 236, 72, 153;
             
             /* General utility colors */
-            --code-bg: #111827;
+            --code-bg: #150f24;
             --success: #10b981;
             --error: #ef4444;
             --warning: #f59e0b;
@@ -53,6 +53,10 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(273, 30%, 8%, 1) 0, transparent 55%), 
+                radial-gradient(at 50% 0%, hsla(280, 50%, 15%, 0.2) 0, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(320, 60%, 12%, 0.15) 0, transparent 55%);
         }
 
         .container {
@@ -190,7 +194,7 @@
         /* Try This / Notes / Tip Callouts */
         .callout {
             border-left: 4px solid var(--accent-primary);
-            background: rgba(16, 185, 129, 0.05);
+            background: rgba(139, 92, 246, 0.05);
             padding: 1.25rem;
             border-radius: 0 12px 12px 0;
             margin: 1.5rem 0;
@@ -198,7 +202,7 @@
 
         .callout.tip {
             border-left-color: var(--accent-secondary);
-            background: rgba(6, 182, 212, 0.05);
+            background: rgba(236, 72, 153, 0.05);
         }
 
         .callout-title {
@@ -376,85 +380,54 @@
 <body>
     <div class="container">
         <header>
-            <div class="badge">Go Loops</div>
-            <h1>For Loops in Go</h1>
-            <p class="subtitle">Master loop syntax, iterating over slices by index, custom steps, and creating while-like loops in Go.</p>
+            <div class="badge">Go Basics</div>
+            <h1>Gopher's Gorgeous Lasagna</h1>
+            <p class="subtitle">Learn variables, constants, type inference, function signatures, and comments in Go.</p>
         </header>
 
         <!-- Section 1 -->
         <section id="section-1">
-            <h2>1. The Standard Three-Component Loop</h2>
-            <p>
-                Unlike many other languages that feature <code>while</code>, <code>do-while</code>, and <code>for</code> loops, Go has <strong>only one</strong> looping construct: the <code>for</code> loop.
-            </p>
-            <p>
-                The standard three-component loop is structured as follows:
-            </p>
-            <pre><code><span class="kw">for</span> init; condition; post {
-    <span class="cmt">// Loop body</span>
-}</code></pre>
+            <h2>1. Variables in Go</h2>
+            <p>Go is a <strong>statically typed</strong> language. Once a variable is declared, its type is locked and cannot change. You can declare variables in two main ways:</p>
             <ul>
-                <li><strong>init</strong>: Runs once before the loop begins. Typically used to declare a counter variable (e.g. <code>i := 0</code>).</li>
-                <li><strong>condition</strong>: Evaluated before every iteration. If it is <code>true</code>, the loop runs; if <code>false</code>, the loop ends.</li>
-                <li><strong>post</strong>: Runs at the end of every iteration. Typically increments the counter (e.g. <code>i++</code>).</li>
+                <li><strong>Explicit Typing:</strong> Define the variable with the <code>var</code> keyword and specify the type explicitly:
+                    <pre><code><span class="kw">var</span> OvenTime <span class="typ">int</span> = <span class="num">40</span></code></pre>
+                </li>
+                <li><strong>Short Variable Declaration (Implicit):</strong> Use the <code>:=</code> operator inside a function. Go will automatically infer the type based on the value on the right:
+                    <pre><code>ovenTime := <span class="num">40</span> <span class="cmt">// Inferred as 'int'</span></code></pre>
+                </li>
             </ul>
-            <div class="callout">
-                <div class="callout-title">⚠️ No Parentheses allowed</div>
-                <p style="margin: 0;">
-                    In Go, you <strong>do not</strong> place parentheses <code>( )</code> around the header components. Doing so will result in a compilation error! The curly braces <code>{ }</code> are always required.
-                </p>
-            </div>
         </section>
 
         <!-- Section 2 -->
         <section id="section-2">
-            <h2>2. Iterating Over Slices by Index</h2>
-            <p>
-                A very common use of for loops is to traverse through elements of a slice using index access. 
-                The loop counter starts at <code>0</code> and increments up to, but not including, the length of the slice (<code>len(slice)</code>).
-            </p>
-            <pre><code>birds := []<span class="typ">int</span>{<span class="num">2</span>, <span class="num">5</span>, <span class="num">0</span>, <span class="num">7</span>}
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(birds); i++ {
-    fmt.<span class="fn">Printf</span>(<span class="str">"Day %d: counted %d birds\n"</span>, i, birds[i])
-}</code></pre>
-            <h3>Slicing a Range Before Looping</h3>
-            <p>
-                If you only want to loop through a subset of a slice (e.g. a specific week's worth of data), you can take a slice of the slice first:
-            </p>
-            <pre><code><span class="cmt">// Get only the second week (indices 7 to 13)</span>
-weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(weekTwo); i++ {
-    <span class="cmt">// Process weekTwo[i]</span>
-}</code></pre>
+            <h2>2. Constants</h2>
+            <p>Constants are immutable values defined with the <code>const</code> keyword. They are set at compile-time and cannot be changed during program execution. To assign a constant, you must use the single equals sign <code>=</code>, never the short declaration <code>:=</code>.</p>
+            <pre><code><span class="kw">const</span> OvenTime = <span class="num">40</span> <span class="cmt">// Correct</span>
+<span class="cmt">// const PrepTime := 2  // Compiler Error!</span></code></pre>
+            <div class="callout warning">
+                <div class="callout-title">⚠️ Mismatched Types!</div>
+                <p style="margin: 0;">If you write <code>const OvenTime = 40.0</code> instead of <code>40</code>, Go will infer the type as a <code>float64</code> rather than an <code>int</code>, which can cause compiler errors when doing integer math!</p>
+            </div>
         </section>
 
         <!-- Section 3 -->
         <section id="section-3">
-            <h2>3. Custom Steps (Alternate Increments)</h2>
-            <p>
-                The <code>post</code> component can be modified to step through the collection differently. Instead of adding 1 (<code>i++</code>), you can add any step size, such as 2 (<code>i += 2</code>).
-            </p>
-            <p>
-                This allows you to visit every second element, starting from index 0:
-            </p>
-            <pre><code>numbers := []<span class="typ">int</span>{<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>, <span class="num">60</span>}
+            <h2>3. Functions & Parameters</h2>
+            <p>Go functions must specify the type of every parameter and return value explicitly. Unlike variables, parameters do not support automatic type inference:</p>
+            <pre><code><span class="kw">func</span> <span class="fn">RemainingOvenTime</span>(actualMinutes <span class="typ">int</span>) <span class="typ">int</span> {
+    <span class="kw">return</span> <span class="num">40</span> - actualMinutes
+}</code></pre>
+        </section>
 
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(numbers); i += <span class="num">2</span> {
-    <span class="cmt">// i will be 0, 2, 4</span>
-    fmt.<span class="fn">Println</span>(numbers[i]) <span class="cmt">// Output: 10, 30, 50</span>
-}</code></pre>
-            <div class="callout tip">
-                <div class="callout-title">💡 Remember: While loops in Go</div>
-                <p style="margin: 0;">
-                    Since Go has no <code>while</code> keyword, you can create a while-loop by omitting the <code>init</code> and <code>post</code> statements:
-                </p>
-                <pre style="margin-bottom:0;"><code>sum := <span class="num">1</span>
-<span class="kw">for</span> sum < <span class="num">1000</span> {
-    sum += sum
-}</code></pre>
-            </div>
+        <!-- Section 4 -->
+        <section id="section-4">
+            <h2>4. Comments</h2>
+            <p>Go supports two types of comments:</p>
+            <ul>
+                <li><code>// Single line comment</code></li>
+                <li><code>/* Multi-line comment block */</code></li>
+            </ul>
         </section>
 
         <!-- Self-Check Quiz -->
@@ -463,58 +436,79 @@ weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
             <div class="quiz-container">
                 <!-- Question 1 -->
                 <div class="question-card" id="q1">
-                    <div class="question-text">1. Which of the following is a valid Go loop declaration?</div>
+                    <div class="question-text">1. Which is the correct way to declare a constant in Go?</div>
                     <div class="options-list">
                         <button class="option-btn" onclick="checkAnswer('q1', 0, false)">
-                            <span>A) for (i := 0; i < 5; i++) { }</span>
+                            <span>A) const OvenTime := 40</span>
                             <span class="option-icon">❌</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 1, true)">
-                            <span>B) for i := 0; i < 5; i++ { }</span>
+                            <span>B) const OvenTime = 40</span>
                             <span class="option-icon">✓</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 2, false)">
-                            <span>C) while i < 5 { }</span>
+                            <span>C) constant OvenTime = 40</span>
                             <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q1-fb-correct">
-                        🎉 Correct! Go does not use parentheses in loop headers, and <code>while</code> is not a keyword.
+                        🎉 Correct! Constants are declared using the <code>const</code> keyword and assigned using the <code>=</code> operator.
                     </div>
                     <div class="feedback incorrect" id="q1-fb-incorrect">
-                        ❌ Incorrect. Remember, Go has no <code>while</code> keyword and does not allow parentheses in loop headers.
+                        ❌ Incorrect. The <code>:=</code> operator is for short variable declarations inside function bodies and cannot be used with <code>const</code>.
                     </div>
                 </div>
 
                 <!-- Question 2 -->
                 <div class="question-card" id="q2">
-                    <div class="question-text">2. How would you start a loop to update every second element in a slice, starting from the first element (index 0)?</div>
+                    <div class="question-text">2. What happens if you define a constant as `const OvenTime = 40.0` and try to subtract it from an integer variable?</div>
                     <div class="options-list">
-                        <button class="option-btn" onclick="checkAnswer('q2', 0, false)">
-                            <span>A) for i := 0; i < len(slice); i++</span>
-                            <span class="option-icon">❌</span>
+                        <button class="option-btn" onclick="checkAnswer('q2', 0, true)">
+                            <span>A) The compiler errors because of mismatched types (float64 and int).</span>
+                            <span class="option-icon">✓</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q2', 1, false)">
-                            <span>B) for i := 1; i < len(slice); i += 2</span>
+                            <span>B) Go automatically converts the constant to an int at runtime.</span>
                             <span class="option-icon">❌</span>
-                        </button>
-                        <button class="option-btn" onclick="checkAnswer('q2', 2, true)">
-                            <span>C) for i := 0; i < len(slice); i += 2</span>
-                            <span class="option-icon">✓</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q2-fb-correct">
-                        🎉 Correct! Starting at index 0 and incrementing by 2 (<code>i += 2</code>) visits indices 0, 2, 4, etc.
+                        🎉 Spot on! Adding a decimal point <code>.0</code> causes Go to infer a float64 type, creating mismatched types when paired with integers.
                     </div>
                     <div class="feedback incorrect" id="q2-fb-incorrect">
-                        ❌ Incorrect. Index 0 is the first element, and <code>i += 2</code> skips every second element. <code>i++</code> visits every element, and starting at index 1 would miss the first element.
+                        ❌ Incorrect. Go does not perform implicit type conversions between integers and floats, even if the float is a whole number like 40.0.
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" id="q3">
+                    <div class="question-text">3. Which function signature is correctly typed in Go?</div>
+                    <div class="options-list">
+                        <button class="option-btn" onclick="checkAnswer('q3', 0, false)">
+                            <span>A) func RemainingOvenTime(actual) int</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 1, true)">
+                            <span>B) func RemainingOvenTime(actual int) int</span>
+                            <span class="option-icon">✓</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 2, false)">
+                            <span>C) func RemainingOvenTime(int actual) int</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                    </div>
+                    <div class="feedback correct" id="q3-fb-correct">
+                        🎉 Correct! Parameters must be named first, followed by their type (e.g., <code>actual int</code>), and the return type is placed at the end.
+                    </div>
+                    <div class="feedback incorrect" id="q3-fb-incorrect">
+                        ❌ Remember: parameter declarations in Go place the parameter name first and the type second.
                     </div>
                 </div>
             </div>
         </section>
 
         <footer>
-            <p>Built with ❤️ for Bird Watcher. Track: Go | Exercise: Bird Watcher</p>
+            <p>Built with ❤️ for Gopher's Gorgeous Lasagna. Track: Go | Exercise: Lasagna</p>
         </footer>
     </div>
 

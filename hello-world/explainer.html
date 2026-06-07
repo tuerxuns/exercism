@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Loops in Go - Interactive Explainer</title>
+    <title>Go Core Concepts: Hello World</title>
     <!-- Google Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,9 +11,9 @@
     <style>
         :root {
             /* Theme Custom Colors */
-            --bg-color: #0b0f19;
-            --card-bg: rgba(23, 28, 41, 0.6);
-            --border-color: rgba(255, 255, 255, 0.08);
+            --bg-color: #080d1a;
+            --card-bg: rgba(17, 24, 39, 0.75);
+            --border-color: rgba(16, 185, 129, 0.15);
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --accent-primary: #10b981;
@@ -376,84 +376,41 @@
 <body>
     <div class="container">
         <header>
-            <div class="badge">Go Loops</div>
-            <h1>For Loops in Go</h1>
-            <p class="subtitle">Master loop syntax, iterating over slices by index, custom steps, and creating while-like loops in Go.</p>
+            <div class="badge">Go Basics</div>
+            <h1>Hello, Gopher!</h1>
+            <p class="subtitle">Welcome to the Go programming language. Let's break down the basic structure of a Go source file and learn how functions work.</p>
         </header>
 
         <!-- Section 1 -->
         <section id="section-1">
-            <h2>1. The Standard Three-Component Loop</h2>
-            <p>
-                Unlike many other languages that feature <code>while</code>, <code>do-while</code>, and <code>for</code> loops, Go has <strong>only one</strong> looping construct: the <code>for</code> loop.
-            </p>
-            <p>
-                The standard three-component loop is structured as follows:
-            </p>
-            <pre><code><span class="kw">for</span> init; condition; post {
-    <span class="cmt">// Loop body</span>
+            <h2>1. Anatomy of a Go File</h2>
+            <p>Every executable Go program starts with a <strong>package declaration</strong>. Packages are Go's way of organizing and reusing code. A Go file is structured like this:</p>
+            <pre><code><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="str">"fmt"</span>
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    fmt.<span class="fn">Println</span>(<span class="str">"Hello, World!"</span>)
 }</code></pre>
+            <h3>Key Components:</h3>
             <ul>
-                <li><strong>init</strong>: Runs once before the loop begins. Typically used to declare a counter variable (e.g. <code>i := 0</code>).</li>
-                <li><strong>condition</strong>: Evaluated before every iteration. If it is <code>true</code>, the loop runs; if <code>false</code>, the loop ends.</li>
-                <li><strong>post</strong>: Runs at the end of every iteration. Typically increments the counter (e.g. <code>i++</code>).</li>
+                <li><strong>package main</strong> tells the Go compiler that this file contains the entry point of our executable program.</li>
+                <li><strong>import "fmt"</strong> imports the format package from Go's standard library, which contains functions for formatting and printing text.</li>
+                <li><strong>func main()</strong> is the main function where the program execution starts.</li>
             </ul>
-            <div class="callout">
-                <div class="callout-title">⚠️ No Parentheses allowed</div>
-                <p style="margin: 0;">
-                    In Go, you <strong>do not</strong> place parentheses <code>( )</code> around the header components. Doing so will result in a compilation error! The curly braces <code>{ }</code> are always required.
-                </p>
-            </div>
         </section>
 
         <!-- Section 2 -->
         <section id="section-2">
-            <h2>2. Iterating Over Slices by Index</h2>
-            <p>
-                A very common use of for loops is to traverse through elements of a slice using index access. 
-                The loop counter starts at <code>0</code> and increments up to, but not including, the length of the slice (<code>len(slice)</code>).
-            </p>
-            <pre><code>birds := []<span class="typ">int</span>{<span class="num">2</span>, <span class="num">5</span>, <span class="num">0</span>, <span class="num">7</span>}
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(birds); i++ {
-    fmt.<span class="fn">Printf</span>(<span class="str">"Day %d: counted %d birds\n"</span>, i, birds[i])
+            <h2>2. Defining and Returning Functions</h2>
+            <p>In Go, functions are declared using the <code>func</code> keyword. Unlike some other languages, you declare the types of parameters and return values after their names:</p>
+            <pre><code><span class="kw">func</span> <span class="fn">HelloWorld</span>() <span class="typ">string</span> {
+    <span class="kw">return</span> <span class="str">"Hello, World!"</span>
 }</code></pre>
-            <h3>Slicing a Range Before Looping</h3>
-            <p>
-                If you only want to loop through a subset of a slice (e.g. a specific week's worth of data), you can take a slice of the slice first:
-            </p>
-            <pre><code><span class="cmt">// Get only the second week (indices 7 to 13)</span>
-weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(weekTwo); i++ {
-    <span class="cmt">// Process weekTwo[i]</span>
-}</code></pre>
-        </section>
-
-        <!-- Section 3 -->
-        <section id="section-3">
-            <h2>3. Custom Steps (Alternate Increments)</h2>
-            <p>
-                The <code>post</code> component can be modified to step through the collection differently. Instead of adding 1 (<code>i++</code>), you can add any step size, such as 2 (<code>i += 2</code>).
-            </p>
-            <p>
-                This allows you to visit every second element, starting from index 0:
-            </p>
-            <pre><code>numbers := []<span class="typ">int</span>{<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>, <span class="num">60</span>}
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(numbers); i += <span class="num">2</span> {
-    <span class="cmt">// i will be 0, 2, 4</span>
-    fmt.<span class="fn">Println</span>(numbers[i]) <span class="cmt">// Output: 10, 30, 50</span>
-}</code></pre>
+            <p>In the function above, <code>HelloWorld</code> takes no parameters and returns a value of type <code>string</code>. We use the <code>return</code> keyword to output the string literal.</p>
             <div class="callout tip">
-                <div class="callout-title">💡 Remember: While loops in Go</div>
-                <p style="margin: 0;">
-                    Since Go has no <code>while</code> keyword, you can create a while-loop by omitting the <code>init</code> and <code>post</code> statements:
-                </p>
-                <pre style="margin-bottom:0;"><code>sum := <span class="num">1</span>
-<span class="kw">for</span> sum < <span class="num">1000</span> {
-    sum += sum
-}</code></pre>
+                <div class="callout-title">💡 Capitalization matters!</div>
+                <p style="margin:0;">In Go, functions that start with a capital letter (like <code>HelloWorld</code>) are <strong>exported</strong>, meaning they can be accessed from other packages. Functions starting with a lowercase letter are private to their package.</p>
             </div>
         </section>
 
@@ -463,58 +420,83 @@ weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
             <div class="quiz-container">
                 <!-- Question 1 -->
                 <div class="question-card" id="q1">
-                    <div class="question-text">1. Which of the following is a valid Go loop declaration?</div>
+                    <div class="question-text">1. Which package declaration must be present in Go for an executable application?</div>
                     <div class="options-list">
                         <button class="option-btn" onclick="checkAnswer('q1', 0, false)">
-                            <span>A) for (i := 0; i < 5; i++) { }</span>
+                            <span>A) package global</span>
                             <span class="option-icon">❌</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 1, true)">
-                            <span>B) for i := 0; i < 5; i++ { }</span>
+                            <span>B) package main</span>
                             <span class="option-icon">✓</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 2, false)">
-                            <span>C) while i < 5 { }</span>
+                            <span>C) package exec</span>
                             <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q1-fb-correct">
-                        🎉 Correct! Go does not use parentheses in loop headers, and <code>while</code> is not a keyword.
+                        🎉 Correct! Only the <code>main</code> package produces an executable binary when compiled.
                     </div>
                     <div class="feedback incorrect" id="q1-fb-incorrect">
-                        ❌ Incorrect. Remember, Go has no <code>while</code> keyword and does not allow parentheses in loop headers.
+                        ❌ Not quite. Go programs start executing in the <code>main</code> package, so <code>package main</code> is required.
                     </div>
                 </div>
 
                 <!-- Question 2 -->
                 <div class="question-card" id="q2">
-                    <div class="question-text">2. How would you start a loop to update every second element in a slice, starting from the first element (index 0)?</div>
+                    <div class="question-text">2. How does Go determine if a function is exported (public) to other packages?</div>
                     <div class="options-list">
-                        <button class="option-btn" onclick="checkAnswer('q2', 0, false)">
-                            <span>A) for i := 0; i < len(slice); i++</span>
-                            <span class="option-icon">❌</span>
+                        <button class="option-btn" onclick="checkAnswer('q2', 0, true)">
+                            <span>A) Its name starts with a capital letter</span>
+                            <span class="option-icon">✓</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q2', 1, false)">
-                            <span>B) for i := 1; i < len(slice); i += 2</span>
+                            <span>B) By placing the "public" keyword before the function definition</span>
                             <span class="option-icon">❌</span>
                         </button>
-                        <button class="option-btn" onclick="checkAnswer('q2', 2, true)">
-                            <span>C) for i := 0; i < len(slice); i += 2</span>
-                            <span class="option-icon">✓</span>
+                        <button class="option-btn" onclick="checkAnswer('q2', 2, false)">
+                            <span>C) By using the "export" keyword before the function definition</span>
+                            <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q2-fb-correct">
-                        🎉 Correct! Starting at index 0 and incrementing by 2 (<code>i += 2</code>) visits indices 0, 2, 4, etc.
+                        🎉 Correct! Go doesn't use <code>public</code> or <code>export</code> keywords; it uses capitalization (capital letters) to indicate public symbols.
                     </div>
                     <div class="feedback incorrect" id="q2-fb-incorrect">
-                        ❌ Incorrect. Index 0 is the first element, and <code>i += 2</code> skips every second element. <code>i++</code> visits every element, and starting at index 1 would miss the first element.
+                        ❌ Not quite. Go does not use an "export" or "public" keyword. It relies entirely on character case (capitalization) to export functions.
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" id="q3">
+                    <div class="question-text">3. Which of the following is the correct syntax for a function that returns a string?</div>
+                    <div class="options-list">
+                        <button class="option-btn" onclick="checkAnswer('q3', 0, false)">
+                            <span>A) func HelloWorld string() { ... }</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 1, false)">
+                            <span>B) string func HelloWorld() { ... }</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 2, true)">
+                            <span>C) func HelloWorld() string { ... }</span>
+                            <span class="option-icon">✓</span>
+                        </button>
+                    </div>
+                    <div class="feedback correct" id="q3-fb-correct">
+                        🎉 Correct! In Go, the return type is declared after the parameter list.
+                    </div>
+                    <div class="feedback incorrect" id="q3-fb-incorrect">
+                        ❌ Oops! In Go, the return type (<code>string</code>) follows the function name and its parameter list.
                     </div>
                 </div>
             </div>
         </section>
 
         <footer>
-            <p>Built with ❤️ for Bird Watcher. Track: Go | Exercise: Bird Watcher</p>
+            <p>Built with ❤️ for Hello, World!. Track: Go | Exercise: Hello, World!</p>
         </footer>
     </div>
 

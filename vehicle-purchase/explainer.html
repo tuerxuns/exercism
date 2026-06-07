@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Loops in Go - Interactive Explainer</title>
+    <title>Go Concepts: Vehicle Purchase (Comparisons & Conditionals)</title>
     <!-- Google Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,11 +16,11 @@
             --border-color: rgba(255, 255, 255, 0.08);
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            --accent-primary: #10b981;
-            --accent-secondary: #06b6d4;
+            --accent-primary: #3b82f6;
+            --accent-secondary: #6366f1;
             --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            --badge-rgba: 16, 185, 129;
-            --badge-rgba2: 6, 182, 212;
+            --badge-rgba: 59, 130, 246;
+            --badge-rgba2: 99, 102, 241;
             
             /* General utility colors */
             --code-bg: #111827;
@@ -190,7 +190,7 @@
         /* Try This / Notes / Tip Callouts */
         .callout {
             border-left: 4px solid var(--accent-primary);
-            background: rgba(16, 185, 129, 0.05);
+            background: rgba(59, 130, 246, 0.05);
             padding: 1.25rem;
             border-radius: 0 12px 12px 0;
             margin: 1.5rem 0;
@@ -198,7 +198,7 @@
 
         .callout.tip {
             border-left-color: var(--accent-secondary);
-            background: rgba(6, 182, 212, 0.05);
+            background: rgba(99, 102, 241, 0.05);
         }
 
         .callout-title {
@@ -376,85 +376,46 @@
 <body>
     <div class="container">
         <header>
-            <div class="badge">Go Loops</div>
-            <h1>For Loops in Go</h1>
-            <p class="subtitle">Master loop syntax, iterating over slices by index, custom steps, and creating while-like loops in Go.</p>
+            <div class="badge">Go Comparisons</div>
+            <h1>Vehicle Purchase</h1>
+            <p class="subtitle">Understand comparison operators, string ordering, and if/else decision paths in Go.</p>
         </header>
 
         <!-- Section 1 -->
         <section id="section-1">
-            <h2>1. The Standard Three-Component Loop</h2>
-            <p>
-                Unlike many other languages that feature <code>while</code>, <code>do-while</code>, and <code>for</code> loops, Go has <strong>only one</strong> looping construct: the <code>for</code> loop.
-            </p>
-            <p>
-                The standard three-component loop is structured as follows:
-            </p>
-            <pre><code><span class="kw">for</span> init; condition; post {
-    <span class="cmt">// Loop body</span>
-}</code></pre>
+            <h2>1. Comparison Operators</h2>
+            <p>Go provides standard comparison operators that evaluate to boolean values (<code>true</code> or <code>false</code>):</p>
             <ul>
-                <li><strong>init</strong>: Runs once before the loop begins. Typically used to declare a counter variable (e.g. <code>i := 0</code>).</li>
-                <li><strong>condition</strong>: Evaluated before every iteration. If it is <code>true</code>, the loop runs; if <code>false</code>, the loop ends.</li>
-                <li><strong>post</strong>: Runs at the end of every iteration. Typically increments the counter (e.g. <code>i++</code>).</li>
+                <li><strong>==</strong> (equal to) and <strong>!=</strong> (not equal to)</li>
+                <li><strong>&lt;</strong> (less than) and <strong>&gt;</strong> (greater than)</li>
+                <li><strong>&lt;=</strong> (less than or equal to) and <strong>&gt;=</strong> (greater than or equal to)</li>
             </ul>
-            <div class="callout">
-                <div class="callout-title">⚠️ No Parentheses allowed</div>
-                <p style="margin: 0;">
-                    In Go, you <strong>do not</strong> place parentheses <code>( )</code> around the header components. Doing so will result in a compilation error! The curly braces <code>{ }</code> are always required.
-                </p>
-            </div>
+            <p>Go is strictly typed; you can only compare variables that share the exact same type. Comparing an <code>int</code> to a <code>float64</code> directly will cause a compile-time error.</p>
         </section>
 
         <!-- Section 2 -->
         <section id="section-2">
-            <h2>2. Iterating Over Slices by Index</h2>
-            <p>
-                A very common use of for loops is to traverse through elements of a slice using index access. 
-                The loop counter starts at <code>0</code> and increments up to, but not including, the length of the slice (<code>len(slice)</code>).
-            </p>
-            <pre><code>birds := []<span class="typ">int</span>{<span class="num">2</span>, <span class="num">5</span>, <span class="num">0</span>, <span class="num">7</span>}
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(birds); i++ {
-    fmt.<span class="fn">Printf</span>(<span class="str">"Day %d: counted %d birds\n"</span>, i, birds[i])
-}</code></pre>
-            <h3>Slicing a Range Before Looping</h3>
-            <p>
-                If you only want to loop through a subset of a slice (e.g. a specific week's worth of data), you can take a slice of the slice first:
-            </p>
-            <pre><code><span class="cmt">// Get only the second week (indices 7 to 13)</span>
-weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(weekTwo); i++ {
-    <span class="cmt">// Process weekTwo[i]</span>
-}</code></pre>
+            <h2>2. Comparing Strings Alphabetically</h2>
+            <p>In Go, strings can be compared using comparison operators (<code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>). The comparison is done lexicographically (alphabetically based on Unicode code points):</p>
+            <pre><code>isFirst := <span class="str">"Apple"</span> < <span class="str">"Banana"</span> <span class="cmt">// true</span>
+isSecond := <span class="str">"Tesla"</span> < <span class="str">"Toyota"</span> <span class="cmt">// true</span></code></pre>
+            <div class="callout tip">
+                <div class="callout-title">💡 Case sensitivity!</div>
+                <p style="margin:0;">Capital letters have smaller Unicode values than lowercase letters. Therefore, <code>"Zebra" &lt; "apple"</code> is <code>true</code>! To perform case-insensitive comparisons, use the <code>strings.ToLower</code> function or <code>strings.EqualFold</code>.</p>
+            </div>
         </section>
 
         <!-- Section 3 -->
         <section id="section-3">
-            <h2>3. Custom Steps (Alternate Increments)</h2>
-            <p>
-                The <code>post</code> component can be modified to step through the collection differently. Instead of adding 1 (<code>i++</code>), you can add any step size, such as 2 (<code>i += 2</code>).
-            </p>
-            <p>
-                This allows you to visit every second element, starting from index 0:
-            </p>
-            <pre><code>numbers := []<span class="typ">int</span>{<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>, <span class="num">60</span>}
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(numbers); i += <span class="num">2</span> {
-    <span class="cmt">// i will be 0, 2, 4</span>
-    fmt.<span class="fn">Println</span>(numbers[i]) <span class="cmt">// Output: 10, 30, 50</span>
+            <h2>3. Multi-branch Conditionals</h2>
+            <p>For more complex decisions, use <code>else if</code> and <code>else</code> branches. Keep in mind that conditions must evaluate to a boolean value, and Go doesn't have "truthy" or "falsy" values:</p>
+            <pre><code><span class="kw">if</span> age < <span class="num">3</span> {
+    price = originalPrice * <span class="num">0.8</span> <span class="cmt">// 80% of original price</span>
+} <span class="kw">else</span> <span class="kw">if</span> age >= <span class="num">10</span> {
+    price = originalPrice * <span class="num">0.5</span> <span class="cmt">// 50% of original price</span>
+} <span class="kw">else</span> {
+    price = originalPrice * <span class="num">0.7</span> <span class="cmt">// 70% of original price</span>
 }</code></pre>
-            <div class="callout tip">
-                <div class="callout-title">💡 Remember: While loops in Go</div>
-                <p style="margin: 0;">
-                    Since Go has no <code>while</code> keyword, you can create a while-loop by omitting the <code>init</code> and <code>post</code> statements:
-                </p>
-                <pre style="margin-bottom:0;"><code>sum := <span class="num">1</span>
-<span class="kw">for</span> sum < <span class="num">1000</span> {
-    sum += sum
-}</code></pre>
-            </div>
         </section>
 
         <!-- Self-Check Quiz -->
@@ -463,58 +424,71 @@ weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
             <div class="quiz-container">
                 <!-- Question 1 -->
                 <div class="question-card" id="q1">
-                    <div class="question-text">1. Which of the following is a valid Go loop declaration?</div>
+                    <div class="question-text">1. What does the expression `"Ford" < "Fiat"` evaluate to in Go?</div>
                     <div class="options-list">
-                        <button class="option-btn" onclick="checkAnswer('q1', 0, false)">
-                            <span>A) for (i := 0; i < 5; i++) { }</span>
+                        <button class="option-btn" onclick="checkAnswer('q1', 0, true)">
+                            <span>A) true (since "o" comes after "i", "Ford" is greater, so Ford &lt; Fiat is false - wait! "o" comes after "i", so Fiat &lt; Ford is true, meaning Ford &lt; Fiat is false!) - let's check: 'F'-'i' vs 'F'-'o'. 'i' comes before 'o', so Fiat is less than Ford! Thus Ford &lt; Fiat is false!</span>
                             <span class="option-icon">❌</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 1, true)">
-                            <span>B) for i := 0; i < 5; i++ { }</span>
+                            <span>B) false</span>
                             <span class="option-icon">✓</span>
-                        </button>
-                        <button class="option-btn" onclick="checkAnswer('q1', 2, false)">
-                            <span>C) while i < 5 { }</span>
-                            <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q1-fb-correct">
-                        🎉 Correct! Go does not use parentheses in loop headers, and <code>while</code> is not a keyword.
+                        🎉 Correct! Alphabetically, "Fiat" comes before "Ford" (since "i" comes before "o"), making "Fiat" smaller than "Ford". Thus, <code>"Ford" &lt; "Fiat"</code> is false.
                     </div>
                     <div class="feedback incorrect" id="q1-fb-incorrect">
-                        ❌ Incorrect. Remember, Go has no <code>while</code> keyword and does not allow parentheses in loop headers.
+                        ❌ Not quite. Alphabetically, "i" in "Fiat" comes before "o" in "Ford". So "Fiat" is smaller, and <code>"Ford" &lt; "Fiat"</code> is false.
                     </div>
                 </div>
 
                 <!-- Question 2 -->
                 <div class="question-card" id="q2">
-                    <div class="question-text">2. How would you start a loop to update every second element in a slice, starting from the first element (index 0)?</div>
+                    <div class="question-text">2. Can you compare an int variable `age` to a float64 literal `3.0` directly using `age < 3.0`?</div>
                     <div class="options-list">
                         <button class="option-btn" onclick="checkAnswer('q2', 0, false)">
-                            <span>A) for i := 0; i < len(slice); i++</span>
+                            <span>A) Yes, Go automatically converts them.</span>
                             <span class="option-icon">❌</span>
                         </button>
-                        <button class="option-btn" onclick="checkAnswer('q2', 1, false)">
-                            <span>B) for i := 1; i < len(slice); i += 2</span>
-                            <span class="option-icon">❌</span>
-                        </button>
-                        <button class="option-btn" onclick="checkAnswer('q2', 2, true)">
-                            <span>C) for i := 0; i < len(slice); i += 2</span>
+                        <button class="option-btn" onclick="checkAnswer('q2', 1, true)">
+                            <span>B) No, it will cause a compile-time error.</span>
                             <span class="option-icon">✓</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q2-fb-correct">
-                        🎉 Correct! Starting at index 0 and incrementing by 2 (<code>i += 2</code>) visits indices 0, 2, 4, etc.
+                        🎉 Correct! Go does not support mixed-type comparison between typed variables and typed expressions. You must explicitly cast the variables.
                     </div>
                     <div class="feedback incorrect" id="q2-fb-incorrect">
-                        ❌ Incorrect. Index 0 is the first element, and <code>i += 2</code> skips every second element. <code>i++</code> visits every element, and starting at index 1 would miss the first element.
+                        ❌ Oops! Go's compiler is strict. It does not allow direct comparison of different types (int vs float64) without explicit casting.
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" id="q3">
+                    <div class="question-text">3. In Go, what is the boolean value of an uninitialized bool variable?</div>
+                    <div class="options-list">
+                        <button class="option-btn" onclick="checkAnswer('q3', 0, false)">
+                            <span>A) true</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 1, true)">
+                            <span>B) false</span>
+                            <span class="option-icon">✓</span>
+                        </button>
+                    </div>
+                    <div class="feedback correct" id="q3-fb-correct">
+                        🎉 Correct! The zero value of a <code>bool</code> type in Go is <code>false</code>.
+                    </div>
+                    <div class="feedback incorrect" id="q3-fb-incorrect">
+                        ❌ Oops! All variables in Go are initialized to their zero value. For booleans, the zero value is <code>false</code>.
                     </div>
                 </div>
             </div>
         </section>
 
         <footer>
-            <p>Built with ❤️ for Bird Watcher. Track: Go | Exercise: Bird Watcher</p>
+            <p>Built with ❤️ for Vehicle Purchase. Track: Go | Exercise: Vehicle Purchase</p>
         </footer>
     </div>
 

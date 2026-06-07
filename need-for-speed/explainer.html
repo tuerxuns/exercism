@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Loops in Go - Interactive Explainer</title>
+    <title>Go Concept Explainer: Structs, Pointers & Methods</title>
     <!-- Google Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,22 +11,22 @@
     <style>
         :root {
             /* Theme Custom Colors */
-            --bg-color: #0b0f19;
-            --card-bg: rgba(23, 28, 41, 0.6);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --accent-primary: #10b981;
-            --accent-secondary: #06b6d4;
+            --bg-color: #050a10;
+            --card-bg: rgba(10, 25, 40, 0.45);
+            --border-color: rgba(0, 229, 255, 0.15);
+            --text-main: #f0f6fc;
+            --text-muted: #8b9eb0;
+            --accent-primary: #00e5ff;
+            --accent-secondary: #0a84ff;
             --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            --badge-rgba: 16, 185, 129;
-            --badge-rgba2: 6, 182, 212;
+            --badge-rgba: 0, 229, 255;
+            --badge-rgba2: 10, 132, 255;
             
             /* General utility colors */
-            --code-bg: #111827;
-            --success: #10b981;
-            --error: #ef4444;
-            --warning: #f59e0b;
+            --code-bg: #07111a;
+            --success: #30d158;
+            --error: #ff453a;
+            --warning: #ff9f0a;
             
             /* Syntax highlighting colors */
             --syn-keyword: #ff79c6;
@@ -53,6 +53,8 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
+            background-image: 
+                radial-gradient(circle at 50% 0%, #0d1e2d 0%, #050a10 100%);
         }
 
         .container {
@@ -190,7 +192,7 @@
         /* Try This / Notes / Tip Callouts */
         .callout {
             border-left: 4px solid var(--accent-primary);
-            background: rgba(16, 185, 129, 0.05);
+            background: rgba(0, 229, 255, 0.05);
             padding: 1.25rem;
             border-radius: 0 12px 12px 0;
             margin: 1.5rem 0;
@@ -198,7 +200,7 @@
 
         .callout.tip {
             border-left-color: var(--accent-secondary);
-            background: rgba(6, 182, 212, 0.05);
+            background: rgba(10, 132, 255, 0.05);
         }
 
         .callout-title {
@@ -376,84 +378,63 @@
 <body>
     <div class="container">
         <header>
-            <div class="badge">Go Loops</div>
-            <h1>For Loops in Go</h1>
-            <p class="subtitle">Master loop syntax, iterating over slices by index, custom steps, and creating while-like loops in Go.</p>
+            <div class="badge">Go Structs & Pointers</div>
+            <h1>Structs, Pointers & Methods</h1>
+            <p class="subtitle">Organize related data using structs, manage memory efficiently with pointers, and attach behavior using methods.</p>
         </header>
 
         <!-- Section 1 -->
         <section id="section-1">
-            <h2>1. The Standard Three-Component Loop</h2>
-            <p>
-                Unlike many other languages that feature <code>while</code>, <code>do-while</code>, and <code>for</code> loops, Go has <strong>only one</strong> looping construct: the <code>for</code> loop.
-            </p>
-            <p>
-                The standard three-component loop is structured as follows:
-            </p>
-            <pre><code><span class="kw">for</span> init; condition; post {
-    <span class="cmt">// Loop body</span>
+            <h2>1. Structs in Go</h2>
+            <p>A <strong>struct</strong> is a typed collection of fields. It is used to group data together to form a custom data type. For example, to represent a car:</p>
+            <pre><code><span class="kw">type</span> Car <span class="kw">struct</span> {
+    battery      <span class="typ">int</span>
+    batteryDrain <span class="typ">int</span>
+    speed        <span class="typ">int</span>
+    distance     <span class="typ">int</span>
 }</code></pre>
-            <ul>
-                <li><strong>init</strong>: Runs once before the loop begins. Typically used to declare a counter variable (e.g. <code>i := 0</code>).</li>
-                <li><strong>condition</strong>: Evaluated before every iteration. If it is <code>true</code>, the loop runs; if <code>false</code>, the loop ends.</li>
-                <li><strong>post</strong>: Runs at the end of every iteration. Typically increments the counter (e.g. <code>i++</code>).</li>
-            </ul>
-            <div class="callout">
-                <div class="callout-title">⚠️ No Parentheses allowed</div>
-                <p style="margin: 0;">
-                    In Go, you <strong>do not</strong> place parentheses <code>( )</code> around the header components. Doing so will result in a compilation error! The curly braces <code>{ }</code> are always required.
-                </p>
-            </div>
+            <p>You can construct a struct instance using a struct literal:</p>
+            <pre><code>myCar := Car{
+    battery:      <span class="num">100</span>,
+    batteryDrain: <span class="num">5</span>,
+    speed:        <span class="num">10</span>,
+}</code></pre>
         </section>
 
         <!-- Section 2 -->
         <section id="section-2">
-            <h2>2. Iterating Over Slices by Index</h2>
-            <p>
-                A very common use of for loops is to traverse through elements of a slice using index access. 
-                The loop counter starts at <code>0</code> and increments up to, but not including, the length of the slice (<code>len(slice)</code>).
-            </p>
-            <pre><code>birds := []<span class="typ">int</span>{<span class="num">2</span>, <span class="num">5</span>, <span class="num">0</span>, <span class="num">7</span>}
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(birds); i++ {
-    fmt.<span class="fn">Printf</span>(<span class="str">"Day %d: counted %d birds\n"</span>, i, birds[i])
-}</code></pre>
-            <h3>Slicing a Range Before Looping</h3>
-            <p>
-                If you only want to loop through a subset of a slice (e.g. a specific week's worth of data), you can take a slice of the slice first:
-            </p>
-            <pre><code><span class="cmt">// Get only the second week (indices 7 to 13)</span>
-weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(weekTwo); i++ {
-    <span class="cmt">// Process weekTwo[i]</span>
-}</code></pre>
+            <h2>2. Pointers in Go</h2>
+            <p>A <strong>pointer</strong> stores the memory address of a value. Pointers allow you to pass references to values instead of copying them:</p>
+            <ul>
+                <li>The <strong>address-of operator (<code>&</code>)</strong> generates a pointer to a variable.</li>
+                <li>The <strong>dereference operator (<code>*</code>)</strong> accesses the value at a pointer's memory address.</li>
+            </ul>
+            <pre><code><span class="kw">var</span> car Car = Car{battery: <span class="num">100</span>}
+<span class="kw">var</span> carPointer *Car = &car <span class="cmt">// carPointer holds the address of car</span>
+(*carPointer).battery = <span class="num">90</span> <span class="cmt">// updates car.battery</span></code></pre>
+            <div class="callout tip">
+                <div class="callout-title">💡 Go's Syntactic Sugar!</div>
+                <p style="margin: 0;">In Go, you don't need to write <code>(*carPointer).battery</code>. You can write <code>carPointer.battery</code> directly; Go automatically handles dereferencing for struct pointers.</p>
+            </div>
         </section>
 
         <!-- Section 3 -->
         <section id="section-3">
-            <h2>3. Custom Steps (Alternate Increments)</h2>
-            <p>
-                The <code>post</code> component can be modified to step through the collection differently. Instead of adding 1 (<code>i++</code>), you can add any step size, such as 2 (<code>i += 2</code>).
-            </p>
-            <p>
-                This allows you to visit every second element, starting from index 0:
-            </p>
-            <pre><code>numbers := []<span class="typ">int</span>{<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>, <span class="num">60</span>}
+            <h2>3. Methods and Receivers</h2>
+            <p>Go doesn't have classes, but you can define <strong>methods</strong> on struct types. A method is a function with a special receiver argument:</p>
+            <pre><code><span class="cmt">// Value Receiver: receives a copy of the struct</span>
+<span class="kw">func</span> (c Car) <span class="fn">DisplayDistance</span>() <span class="typ">string</span> {
+    <span class="kw">return</span> fmt.<span class="fn">Sprintf</span>(<span class="str">"Driven %d meters"</span>, c.distance)
+}
 
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(numbers); i += <span class="num">2</span> {
-    <span class="cmt">// i will be 0, 2, 4</span>
-    fmt.<span class="fn">Println</span>(numbers[i]) <span class="cmt">// Output: 10, 30, 50</span>
+<span class="cmt">// Pointer Receiver: receives a pointer, allowing modifications to the struct</span>
+<span class="kw">func</span> (c *Car) <span class="fn">Drive</span>() {
+    c.distance += c.speed
+    c.battery -= c.batteryDrain
 }</code></pre>
-            <div class="callout tip">
-                <div class="callout-title">💡 Remember: While loops in Go</div>
-                <p style="margin: 0;">
-                    Since Go has no <code>while</code> keyword, you can create a while-loop by omitting the <code>init</code> and <code>post</code> statements:
-                </p>
-                <pre style="margin-bottom:0;"><code>sum := <span class="num">1</span>
-<span class="kw">for</span> sum < <span class="num">1000</span> {
-    sum += sum
-}</code></pre>
+            <div class="callout warning">
+                <div class="callout-title">⚠️ When to use Pointer Receivers?</div>
+                <p style="margin: 0;">Use a pointer receiver if: (1) you need to modify the receiver's fields, or (2) the struct is large and copying it on every method call would be slow.</p>
             </div>
         </section>
 
@@ -463,58 +444,75 @@ weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
             <div class="quiz-container">
                 <!-- Question 1 -->
                 <div class="question-card" id="q1">
-                    <div class="question-text">1. Which of the following is a valid Go loop declaration?</div>
+                    <div class="question-text">1. Which operator is used to get the memory address of a variable in Go?</div>
                     <div class="options-list">
                         <button class="option-btn" onclick="checkAnswer('q1', 0, false)">
-                            <span>A) for (i := 0; i < 5; i++) { }</span>
+                            <span>A) *</span>
                             <span class="option-icon">❌</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 1, true)">
-                            <span>B) for i := 0; i < 5; i++ { }</span>
+                            <span>B) &</span>
                             <span class="option-icon">✓</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 2, false)">
-                            <span>C) while i < 5 { }</span>
+                            <span>C) -></span>
                             <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q1-fb-correct">
-                        🎉 Correct! Go does not use parentheses in loop headers, and <code>while</code> is not a keyword.
+                        🎉 Correct! The address-of operator (<code>&</code>) returns the pointer/address of a variable.
                     </div>
                     <div class="feedback incorrect" id="q1-fb-incorrect">
-                        ❌ Incorrect. Remember, Go has no <code>while</code> keyword and does not allow parentheses in loop headers.
+                        ❌ Not quite. <code>&</code> generates a pointer to a value, whereas <code>*</code> dereferences a pointer.
                     </div>
                 </div>
 
                 <!-- Question 2 -->
                 <div class="question-card" id="q2">
-                    <div class="question-text">2. How would you start a loop to update every second element in a slice, starting from the first element (index 0)?</div>
+                    <div class="question-text">2. Why would you define a method with a pointer receiver `(c *Car)` instead of a value receiver `(c Car)`?</div>
                     <div class="options-list">
-                        <button class="option-btn" onclick="checkAnswer('q2', 0, false)">
-                            <span>A) for i := 0; i < len(slice); i++</span>
-                            <span class="option-icon">❌</span>
+                        <button class="option-btn" onclick="checkAnswer('q2', 0, true)">
+                            <span>A) To allow the method to modify the fields of the original struct.</span>
+                            <span class="option-icon">✓</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q2', 1, false)">
-                            <span>B) for i := 1; i < len(slice); i += 2</span>
+                            <span>B) Pointer receivers run faster for small structs.</span>
                             <span class="option-icon">❌</span>
-                        </button>
-                        <button class="option-btn" onclick="checkAnswer('q2', 2, true)">
-                            <span>C) for i := 0; i < len(slice); i += 2</span>
-                            <span class="option-icon">✓</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q2-fb-correct">
-                        🎉 Correct! Starting at index 0 and incrementing by 2 (<code>i += 2</code>) visits indices 0, 2, 4, etc.
+                        🎉 Correct! A pointer receiver allows the method to mutate the struct fields. Value receivers only receive a copy.
                     </div>
                     <div class="feedback incorrect" id="q2-fb-incorrect">
-                        ❌ Incorrect. Index 0 is the first element, and <code>i += 2</code> skips every second element. <code>i++</code> visits every element, and starting at index 1 would miss the first element.
+                        ❌ Not quite. Value receivers work on copies and cannot modify the original struct's state. You must use pointer receivers for mutations.
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" id="q3">
+                    <div class="question-text">3. What is the value of a struct pointer that is declared but not initialized?</div>
+                    <div class="options-list">
+                        <button class="option-btn" onclick="checkAnswer('q3', 0, false)">
+                            <span>A) An empty struct instance</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 1, true)">
+                            <span>B) nil</span>
+                            <span class="option-icon">✓</span>
+                        </button>
+                    </div>
+                    <div class="feedback correct" id="q3-fb-correct">
+                        🎉 Correct! The zero value of a pointer is <code>nil</code>.
+                    </div>
+                    <div class="feedback incorrect" id="q3-fb-incorrect">
+                        ❌ Oops! Since pointers store memory addresses, a pointer declared without an address is <code>nil</code>.
                     </div>
                 </div>
             </div>
         </section>
 
         <footer>
-            <p>Built with ❤️ for Bird Watcher. Track: Go | Exercise: Bird Watcher</p>
+            <p>Built with ❤️ for Need for Speed. Track: Go | Exercise: Need for Speed</p>
         </footer>
     </div>
 

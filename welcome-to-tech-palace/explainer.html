@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Loops in Go - Interactive Explainer</title>
+    <title>Go Core Concepts: Welcome to Tech Palace (Strings Package)</title>
     <!-- Google Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,11 +16,11 @@
             --border-color: rgba(255, 255, 255, 0.08);
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            --accent-primary: #10b981;
-            --accent-secondary: #06b6d4;
+            --accent-primary: #a855f7;
+            --accent-secondary: #ec4899;
             --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            --badge-rgba: 16, 185, 129;
-            --badge-rgba2: 6, 182, 212;
+            --badge-rgba: 168, 85, 247;
+            --badge-rgba2: 236, 72, 153;
             
             /* General utility colors */
             --code-bg: #111827;
@@ -190,7 +190,7 @@
         /* Try This / Notes / Tip Callouts */
         .callout {
             border-left: 4px solid var(--accent-primary);
-            background: rgba(16, 185, 129, 0.05);
+            background: rgba(168, 85, 247, 0.05);
             padding: 1.25rem;
             border-radius: 0 12px 12px 0;
             margin: 1.5rem 0;
@@ -198,7 +198,7 @@
 
         .callout.tip {
             border-left-color: var(--accent-secondary);
-            background: rgba(6, 182, 212, 0.05);
+            background: rgba(236, 72, 153, 0.05);
         }
 
         .callout-title {
@@ -376,85 +376,35 @@
 <body>
     <div class="container">
         <header>
-            <div class="badge">Go Loops</div>
-            <h1>For Loops in Go</h1>
-            <p class="subtitle">Master loop syntax, iterating over slices by index, custom steps, and creating while-like loops in Go.</p>
+            <div class="badge">Go Strings</div>
+            <h1>Welcome to Tech Palace</h1>
+            <p class="subtitle">Manipulate text efficiently in Go using string immutable sequences and the standard library's <code>strings</code> package.</p>
         </header>
 
         <!-- Section 1 -->
         <section id="section-1">
-            <h2>1. The Standard Three-Component Loop</h2>
-            <p>
-                Unlike many other languages that feature <code>while</code>, <code>do-while</code>, and <code>for</code> loops, Go has <strong>only one</strong> looping construct: the <code>for</code> loop.
-            </p>
-            <p>
-                The standard three-component loop is structured as follows:
-            </p>
-            <pre><code><span class="kw">for</span> init; condition; post {
-    <span class="cmt">// Loop body</span>
-}</code></pre>
-            <ul>
-                <li><strong>init</strong>: Runs once before the loop begins. Typically used to declare a counter variable (e.g. <code>i := 0</code>).</li>
-                <li><strong>condition</strong>: Evaluated before every iteration. If it is <code>true</code>, the loop runs; if <code>false</code>, the loop ends.</li>
-                <li><strong>post</strong>: Runs at the end of every iteration. Typically increments the counter (e.g. <code>i++</code>).</li>
-            </ul>
-            <div class="callout">
-                <div class="callout-title">⚠️ No Parentheses allowed</div>
-                <p style="margin: 0;">
-                    In Go, you <strong>do not</strong> place parentheses <code>( )</code> around the header components. Doing so will result in a compilation error! The curly braces <code>{ }</code> are always required.
-                </p>
-            </div>
+            <h2>1. Go Strings</h2>
+            <p>In Go, a <code>string</code> is an immutable sequence of bytes. Once a string is created, its value cannot be changed. Any operation that appears to modify a string actually creates a brand-new string in memory.</p>
+            <p>You can declare string literals using double quotes (with escape sequences) or backticks (raw strings):</p>
+            <pre><code>escapedStr := <span class="str">"Hello\nWorld"</span> <span class="cmt">// contains newlines</span>
+rawStr := <span class="str">`Line 1
+Line 2`</span> <span class="cmt">// keeps original layout exactly</span></code></pre>
         </section>
 
         <!-- Section 2 -->
         <section id="section-2">
-            <h2>2. Iterating Over Slices by Index</h2>
-            <p>
-                A very common use of for loops is to traverse through elements of a slice using index access. 
-                The loop counter starts at <code>0</code> and increments up to, but not including, the length of the slice (<code>len(slice)</code>).
-            </p>
-            <pre><code>birds := []<span class="typ">int</span>{<span class="num">2</span>, <span class="num">5</span>, <span class="num">0</span>, <span class="num">7</span>}
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(birds); i++ {
-    fmt.<span class="fn">Printf</span>(<span class="str">"Day %d: counted %d birds\n"</span>, i, birds[i])
-}</code></pre>
-            <h3>Slicing a Range Before Looping</h3>
-            <p>
-                If you only want to loop through a subset of a slice (e.g. a specific week's worth of data), you can take a slice of the slice first:
-            </p>
-            <pre><code><span class="cmt">// Get only the second week (indices 7 to 13)</span>
-weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(weekTwo); i++ {
-    <span class="cmt">// Process weekTwo[i]</span>
-}</code></pre>
-        </section>
-
-        <!-- Section 3 -->
-        <section id="section-3">
-            <h2>3. Custom Steps (Alternate Increments)</h2>
-            <p>
-                The <code>post</code> component can be modified to step through the collection differently. Instead of adding 1 (<code>i++</code>), you can add any step size, such as 2 (<code>i += 2</code>).
-            </p>
-            <p>
-                This allows you to visit every second element, starting from index 0:
-            </p>
-            <pre><code>numbers := []<span class="typ">int</span>{<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>, <span class="num">60</span>}
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(numbers); i += <span class="num">2</span> {
-    <span class="cmt">// i will be 0, 2, 4</span>
-    fmt.<span class="fn">Println</span>(numbers[i]) <span class="cmt">// Output: 10, 30, 50</span>
-}</code></pre>
-            <div class="callout tip">
-                <div class="callout-title">💡 Remember: While loops in Go</div>
-                <p style="margin: 0;">
-                    Since Go has no <code>while</code> keyword, you can create a while-loop by omitting the <code>init</code> and <code>post</code> statements:
-                </p>
-                <pre style="margin-bottom:0;"><code>sum := <span class="num">1</span>
-<span class="kw">for</span> sum < <span class="num">1000</span> {
-    sum += sum
-}</code></pre>
-            </div>
+            <h2>2. The strings Package</h2>
+            <p>Go provides the <code>strings</code> package in its standard library to perform common text manipulation tasks efficiently:</p>
+            <ul>
+                <li><strong>strings.HasPrefix(s, prefix)</strong>: Checks if string <code>s</code> starts with <code>prefix</code>.
+                    <pre><code>isWelcome := strings.<span class="fn">HasPrefix</span>(<span class="str">"Welcome Guest"</span>, <span class="str">"Welcome"</span>) <span class="cmt">// true</span></code></pre>
+                </li>
+                <li><strong>strings.ToUpper(s)</strong>: Returns a copy of <code>s</code> converted to uppercase.</li>
+                <li><strong>strings.ReplaceAll(s, old, new)</strong>: Replaces all occurrences of <code>old</code> with <code>new</code>.</li>
+                <li><strong>strings.TrimSpace(s)</strong>: Removes leading and trailing whitespace characters (spaces, tabs, newlines).
+                    <pre><code>cleaned := strings.<span class="fn">TrimSpace</span>(<span class="str">"   Hello Gopher! \n"</span>) <span class="cmt">// "Hello Gopher!"</span></code></pre>
+                </li>
+            </ul>
         </section>
 
         <!-- Self-Check Quiz -->
@@ -463,58 +413,75 @@ weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
             <div class="quiz-container">
                 <!-- Question 1 -->
                 <div class="question-card" id="q1">
-                    <div class="question-text">1. Which of the following is a valid Go loop declaration?</div>
+                    <div class="question-text">1. Are Go strings mutable (can be changed element-by-element after creation)?</div>
                     <div class="options-list">
                         <button class="option-btn" onclick="checkAnswer('q1', 0, false)">
-                            <span>A) for (i := 0; i < 5; i++) { }</span>
+                            <span>A) Yes, they behave like character arrays.</span>
                             <span class="option-icon">❌</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 1, true)">
-                            <span>B) for i := 0; i < 5; i++ { }</span>
+                            <span>B) No, Go strings are completely immutable.</span>
                             <span class="option-icon">✓</span>
-                        </button>
-                        <button class="option-btn" onclick="checkAnswer('q1', 2, false)">
-                            <span>C) while i < 5 { }</span>
-                            <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q1-fb-correct">
-                        🎉 Correct! Go does not use parentheses in loop headers, and <code>while</code> is not a keyword.
+                        🎉 Correct! Strings are immutable. Reassigning or concatenating strings creates new strings in memory.
                     </div>
                     <div class="feedback incorrect" id="q1-fb-incorrect">
-                        ❌ Incorrect. Remember, Go has no <code>while</code> keyword and does not allow parentheses in loop headers.
+                        ❌ Not quite. Go strings are immutable. You cannot modify individual characters directly.
                     </div>
                 </div>
 
                 <!-- Question 2 -->
                 <div class="question-card" id="q2">
-                    <div class="question-text">2. How would you start a loop to update every second element in a slice, starting from the first element (index 0)?</div>
+                    <div class="question-text">2. Which function from the `strings` package removes leading and trailing spaces?</div>
                     <div class="options-list">
                         <button class="option-btn" onclick="checkAnswer('q2', 0, false)">
-                            <span>A) for i := 0; i < len(slice); i++</span>
+                            <span>A) strings.Strip()</span>
                             <span class="option-icon">❌</span>
                         </button>
-                        <button class="option-btn" onclick="checkAnswer('q2', 1, false)">
-                            <span>B) for i := 1; i < len(slice); i += 2</span>
-                            <span class="option-icon">❌</span>
-                        </button>
-                        <button class="option-btn" onclick="checkAnswer('q2', 2, true)">
-                            <span>C) for i := 0; i < len(slice); i += 2</span>
+                        <button class="option-btn" onclick="checkAnswer('q2', 1, true)">
+                            <span>B) strings.TrimSpace()</span>
                             <span class="option-icon">✓</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q2', 2, false)">
+                            <span>C) strings.Clean()</span>
+                            <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q2-fb-correct">
-                        🎉 Correct! Starting at index 0 and incrementing by 2 (<code>i += 2</code>) visits indices 0, 2, 4, etc.
+                        🎉 Correct! <code>strings.TrimSpace</code> strips out tabs, spaces, and newline sequences from both ends.
                     </div>
                     <div class="feedback incorrect" id="q2-fb-incorrect">
-                        ❌ Incorrect. Index 0 is the first element, and <code>i += 2</code> skips every second element. <code>i++</code> visits every element, and starting at index 1 would miss the first element.
+                        ❌ Oops! The correct standard library function name is <code>strings.TrimSpace</code>.
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" id="q3">
+                    <div class="question-text">3. What is the difference between raw string literals (with backticks) and standard string literals (with quotes)?</div>
+                    <div class="options-list">
+                        <button class="option-btn" onclick="checkAnswer('q3', 0, true)">
+                            <span>A) Raw string literals ignore escape sequences like \n and support multiline blocks.</span>
+                            <span class="option-icon">✓</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 1, false)">
+                            <span>B) Raw string literals compile faster but cannot contain spaces.</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                    </div>
+                    <div class="feedback correct" id="q3-fb-correct">
+                        🎉 Correct! Raw strings defined with backticks <code>`</code> preserve format, spaces, and do not process escape characters.
+                    </div>
+                    <div class="feedback incorrect" id="q3-fb-incorrect">
+                        ❌ Oops! Raw string literals ignore backslashes and can stretch across multiple lines directly, preserving all layout details.
                     </div>
                 </div>
             </div>
         </section>
 
         <footer>
-            <p>Built with ❤️ for Bird Watcher. Track: Go | Exercise: Bird Watcher</p>
+            <p>Built with ❤️ for Welcome to Tech Palace. Track: Go | Exercise: Welcome to Tech Palace</p>
         </footer>
     </div>
 

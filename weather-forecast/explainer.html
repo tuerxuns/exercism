@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Loops in Go - Interactive Explainer</title>
+    <title>Go Concepts: Packages, Comments & Exported Names</title>
     <!-- Google Fonts: Outfit & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,8 +11,8 @@
     <style>
         :root {
             /* Theme Custom Colors */
-            --bg-color: #0b0f19;
-            --card-bg: rgba(23, 28, 41, 0.6);
+            --bg-color: #060b13;
+            --card-bg: rgba(13, 21, 34, 0.7);
             --border-color: rgba(255, 255, 255, 0.08);
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
@@ -23,7 +23,7 @@
             --badge-rgba2: 6, 182, 212;
             
             /* General utility colors */
-            --code-bg: #111827;
+            --code-bg: #0d1522;
             --success: #10b981;
             --error: #ef4444;
             --warning: #f59e0b;
@@ -376,85 +376,44 @@
 <body>
     <div class="container">
         <header>
-            <div class="badge">Go Loops</div>
-            <h1>For Loops in Go</h1>
-            <p class="subtitle">Master loop syntax, iterating over slices by index, custom steps, and creating while-like loops in Go.</p>
+            <div class="badge">Go Organization</div>
+            <h1>Packages, Comments & Exported Names</h1>
+            <p class="subtitle">Understand modularity through packages, document code with comments, and control access visibility via capitalization.</p>
         </header>
 
         <!-- Section 1 -->
         <section id="section-1">
-            <h2>1. The Standard Three-Component Loop</h2>
-            <p>
-                Unlike many other languages that feature <code>while</code>, <code>do-while</code>, and <code>for</code> loops, Go has <strong>only one</strong> looping construct: the <code>for</code> loop.
-            </p>
-            <p>
-                The standard three-component loop is structured as follows:
-            </p>
-            <pre><code><span class="kw">for</span> init; condition; post {
-    <span class="cmt">// Loop body</span>
-}</code></pre>
-            <ul>
-                <li><strong>init</strong>: Runs once before the loop begins. Typically used to declare a counter variable (e.g. <code>i := 0</code>).</li>
-                <li><strong>condition</strong>: Evaluated before every iteration. If it is <code>true</code>, the loop runs; if <code>false</code>, the loop ends.</li>
-                <li><strong>post</strong>: Runs at the end of every iteration. Typically increments the counter (e.g. <code>i++</code>).</li>
-            </ul>
-            <div class="callout">
-                <div class="callout-title">⚠️ No Parentheses allowed</div>
-                <p style="margin: 0;">
-                    In Go, you <strong>do not</strong> place parentheses <code>( )</code> around the header components. Doing so will result in a compilation error! The curly braces <code>{ }</code> are always required.
-                </p>
-            </div>
+            <h2>1. Packages in Go</h2>
+            <p>Every Go file must declare which <strong>package</strong> it belongs to. Packages group files that belong to the same directory and share a common namespace. For example:</p>
+            <pre><code><span class="kw">package</span> weather</code></pre>
+            <p>All files in the same directory must use the exact same package name. The package name is used by other parts of the program to access functions, variables, or custom types defined in that package.</p>
         </section>
 
         <!-- Section 2 -->
         <section id="section-2">
-            <h2>2. Iterating Over Slices by Index</h2>
-            <p>
-                A very common use of for loops is to traverse through elements of a slice using index access. 
-                The loop counter starts at <code>0</code> and increments up to, but not including, the length of the slice (<code>len(slice)</code>).
-            </p>
-            <pre><code>birds := []<span class="typ">int</span>{<span class="num">2</span>, <span class="num">5</span>, <span class="num">0</span>, <span class="num">7</span>}
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(birds); i++ {
-    fmt.<span class="fn">Printf</span>(<span class="str">"Day %d: counted %d birds\n"</span>, i, birds[i])
-}</code></pre>
-            <h3>Slicing a Range Before Looping</h3>
-            <p>
-                If you only want to loop through a subset of a slice (e.g. a specific week's worth of data), you can take a slice of the slice first:
-            </p>
-            <pre><code><span class="cmt">// Get only the second week (indices 7 to 13)</span>
-weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(weekTwo); i++ {
-    <span class="cmt">// Process weekTwo[i]</span>
-}</code></pre>
+            <h2>2. Documenting with Comments</h2>
+            <p>Go supports standard commenting conventions to describe code logic, which can be compiled into documentation automatically using tools like <code>godoc</code>:</p>
+            <ul>
+                <li><strong>Line Comments (<code>//</code>)</strong>: Single-line descriptions. Used for short inline comments or documenting function signatures.
+                    <pre><code><span class="cmt">// CurrentCondition stores the weather condition string.</span>
+<span class="kw">var</span> CurrentCondition <span class="typ">string</span></code></pre>
+                </li>
+                <li><strong>Block Comments (<code>/* ... */</code>)</strong>: Multi-line descriptions. Often used for package-level documentation at the very top of a package file.</li>
+            </ul>
         </section>
 
         <!-- Section 3 -->
         <section id="section-3">
-            <h2>3. Custom Steps (Alternate Increments)</h2>
-            <p>
-                The <code>post</code> component can be modified to step through the collection differently. Instead of adding 1 (<code>i++</code>), you can add any step size, such as 2 (<code>i += 2</code>).
-            </p>
-            <p>
-                This allows you to visit every second element, starting from index 0:
-            </p>
-            <pre><code>numbers := []<span class="typ">int</span>{<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>, <span class="num">60</span>}
-
-<span class="kw">for</span> i := <span class="num">0</span>; i < <span class="fn">len</span>(numbers); i += <span class="num">2</span> {
-    <span class="cmt">// i will be 0, 2, 4</span>
-    fmt.<span class="fn">Println</span>(numbers[i]) <span class="cmt">// Output: 10, 30, 50</span>
-}</code></pre>
-            <div class="callout tip">
-                <div class="callout-title">💡 Remember: While loops in Go</div>
-                <p style="margin: 0;">
-                    Since Go has no <code>while</code> keyword, you can create a while-loop by omitting the <code>init</code> and <code>post</code> statements:
-                </p>
-                <pre style="margin-bottom:0;"><code>sum := <span class="num">1</span>
-<span class="kw">for</span> sum < <span class="num">1000</span> {
-    sum += sum
-}</code></pre>
-            </div>
+            <h2>3. Exported Names</h2>
+            <p>In Go, visibility is controlled entirely by the <strong>capitalization</strong> of the identifier's first character:</p>
+            <ul>
+                <li><strong>Exported (Public)</strong>: If the identifier starts with a capital letter, it is public and can be accessed outside the package.
+                    <pre><code><span class="kw">func</span> <span class="fn">Forecast</span>(city <span class="typ">string</span>) <span class="typ">string</span> <span class="cmt">// Exported function</span></code></pre>
+                </li>
+                <li><strong>Unexported (Private)</strong>: If it starts with a lowercase letter, it is private and only visible inside its package.
+                    <pre><code><span class="kw">var</span> currentCondition <span class="typ">string</span> <span class="cmt">// Unexported variable</span></code></pre>
+                </li>
+            </ul>
         </section>
 
         <!-- Self-Check Quiz -->
@@ -463,58 +422,75 @@ weekTwo := birdsPerDay[<span class="num">7</span>:<span class="num">14</span>]
             <div class="quiz-container">
                 <!-- Question 1 -->
                 <div class="question-card" id="q1">
-                    <div class="question-text">1. Which of the following is a valid Go loop declaration?</div>
+                    <div class="question-text">1. Can files in the same directory declare different package names?</div>
                     <div class="options-list">
                         <button class="option-btn" onclick="checkAnswer('q1', 0, false)">
-                            <span>A) for (i := 0; i < 5; i++) { }</span>
+                            <span>A) Yes, they can be named whatever.</span>
                             <span class="option-icon">❌</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q1', 1, true)">
-                            <span>B) for i := 0; i < 5; i++ { }</span>
+                            <span>B) No, all Go source files in a single directory must share the same package name.</span>
                             <span class="option-icon">✓</span>
-                        </button>
-                        <button class="option-btn" onclick="checkAnswer('q1', 2, false)">
-                            <span>C) while i < 5 { }</span>
-                            <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q1-fb-correct">
-                        🎉 Correct! Go does not use parentheses in loop headers, and <code>while</code> is not a keyword.
+                        🎉 Correct! All files in a directory are compiled together as a single package and must share the same package declaration.
                     </div>
                     <div class="feedback incorrect" id="q1-fb-incorrect">
-                        ❌ Incorrect. Remember, Go has no <code>while</code> keyword and does not allow parentheses in loop headers.
+                        ❌ Not quite. Go enforces directory-level modularity. Every file in the same folder must declare the exact same package name.
                     </div>
                 </div>
 
                 <!-- Question 2 -->
                 <div class="question-card" id="q2">
-                    <div class="question-text">2. How would you start a loop to update every second element in a slice, starting from the first element (index 0)?</div>
+                    <div class="question-text">2. Which of the following defines an exported variable named "temperature"?</div>
                     <div class="options-list">
-                        <button class="option-btn" onclick="checkAnswer('q2', 0, false)">
-                            <span>A) for i := 0; i < len(slice); i++</span>
-                            <span class="option-icon">❌</span>
+                        <button class="option-btn" onclick="checkAnswer('q2', 0, true)">
+                            <span>A) var Temperature int</span>
+                            <span class="option-icon">✓</span>
                         </button>
                         <button class="option-btn" onclick="checkAnswer('q2', 1, false)">
-                            <span>B) for i := 1; i < len(slice); i += 2</span>
+                            <span>B) public var temperature int</span>
                             <span class="option-icon">❌</span>
                         </button>
-                        <button class="option-btn" onclick="checkAnswer('q2', 2, true)">
-                            <span>C) for i := 0; i < len(slice); i += 2</span>
-                            <span class="option-icon">✓</span>
+                        <button class="option-btn" onclick="checkAnswer('q2', 2, false)">
+                            <span>C) export var temperature int</span>
+                            <span class="option-icon">❌</span>
                         </button>
                     </div>
                     <div class="feedback correct" id="q2-fb-correct">
-                        🎉 Correct! Starting at index 0 and incrementing by 2 (<code>i += 2</code>) visits indices 0, 2, 4, etc.
+                        🎉 Correct! Capitalizing the first character (<code>Temperature</code>) makes it public (exported) outside the package.
                     </div>
                     <div class="feedback incorrect" id="q2-fb-incorrect">
-                        ❌ Incorrect. Index 0 is the first element, and <code>i += 2</code> skips every second element. <code>i++</code> visits every element, and starting at index 1 would miss the first element.
+                        ❌ Oops! Go does not use keywords like <code>public</code> or <code>export</code>. It relies entirely on capitalization to control visibility.
+                    </div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="question-card" id="q3">
+                    <div class="question-text">3. What is the standard comment syntax for package-level multiline documentation in Go?</div>
+                    <div class="options-list">
+                        <button class="option-btn" onclick="checkAnswer('q3', 0, false)">
+                            <span>A) # comments</span>
+                            <span class="option-icon">❌</span>
+                        </button>
+                        <button class="option-btn" onclick="checkAnswer('q3', 1, true)">
+                            <span>B) /* block comments */</span>
+                            <span class="option-icon">✓</span>
+                        </button>
+                    </div>
+                    <div class="feedback correct" id="q3-fb-correct">
+                        🎉 Correct! Block comments (<code>/* ... */</code>) are typically used for package documentation headers.
+                    </div>
+                    <div class="feedback incorrect" id="q3-fb-incorrect">
+                        ❌ Not quite. <code>#</code> is not a valid comment character in Go. Go uses <code>//</code> for line comments and <code>/* */</code> for block comments.
                     </div>
                 </div>
             </div>
         </section>
 
         <footer>
-            <p>Built with ❤️ for Bird Watcher. Track: Go | Exercise: Bird Watcher</p>
+            <p>Built with ❤️ for Weather Forecast. Track: Go | Exercise: Weather Forecast</p>
         </footer>
     </div>
 
