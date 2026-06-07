@@ -24,4 +24,6 @@ Thumbs.db
 .exercism/
 
 # Agent skills folder
-.agents/
+.agents/*
+!.agents/rules/
+

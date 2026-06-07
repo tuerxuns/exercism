@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Loops in Go - Interactive Explainer</title>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(23, 28, 41, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-primary: #10b981;
+            --accent-secondary: #06b6d4;
+            --accent-gradient: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --code-bg: #111827;
+            --quiz-success: #10b981;
+            --quiz-wrong: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 840px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+            position: relative;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 150px;
+            background: var(--accent-gradient);
+            filter: blur(100px);
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        section {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.05);
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #ffffff;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: #ffffff;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: #d1d5db;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1.25rem;
+            color: #d1d5db;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .citation {
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--accent-primary);
+            transition: color 0.2s, border-bottom 0.2s;
+        }
+
+        .citation:hover {
+            color: var(--accent-secondary);
+            border-bottom-color: var(--accent-secondary);
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1.25rem 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+
+        p > code {
+            background-color: rgba(255, 255, 255, 0.06);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .callout {
+            border-left: 4px solid var(--accent-primary);
+            background: rgba(16, 185, 129, 0.05);
+            padding: 1.25rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .callout.try-this {
+            border-left-color: var(--accent-secondary);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .quiz-question {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .quiz-option.correct {
+            background: rgba(16, 185, 129, 0.15) !important;
+            border-color: var(--quiz-success) !important;
+        }
+
+        .quiz-option.wrong {
+            background: rgba(239, 68, 68, 0.15) !important;
+            border-color: var(--quiz-wrong) !important;
+        }
+
+        .quiz-feedback {
+            margin-top: 1rem;
+            font-weight: 500;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .quiz-feedback.success {
+            color: var(--quiz-success);
+        }
+
+        .quiz-feedback.error {
+            color: var(--quiz-wrong);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>For Loops in Go</h1>
+            <p class="subtitle">Mastering the only looping construct in Go</p>
+        </header>
+
+        <!-- Section 1: Standard For Loop -->
+        <section id="standard-loop">
+            <h2>1. The Standard Three-Component Loop</h2>
+            <p>
+                Unlike many other languages that feature <code>while</code>, <code>do-while</code>, and <code>for</code> loops, Go has **only one** looping construct: the <strong><code>for</code></strong> loop.
+                <a class="citation" href="https://go.dev/tour/flowcontrol/1" target="_blank">[A Tour of Go: For]</a>
+            </p>
+            <p>
+                The standard three-component loop is structured as follows:
+            </p>
+            <pre><code>for init; condition; post {
+    // Loop body
+}</code></pre>
+            <ul>
+                <li><strong><code>init</code></strong>: Runs once before the loop begins. Typically used to declare a counter variable (e.g. <code>i := 0</code>).</li>
+                <li><strong><code>condition</code></strong>: Evaluated before every iteration. If it is <code>true</code>, the loop runs; if <code>false</code>, the loop ends.</li>
+                <li><strong><code>post</code></strong>: Runs at the end of every iteration. Typically increments the counter (e.g. <code>i++</code>).</li>
+            </ul>
+
+            <div class="callout">
+                <div class="callout-title">⚠️ No Parentheses allowed</div>
+                <p>
+                    In Go, you **do not** place parentheses <code>( )</code> around the header components. Doing so will result in a compilation error! The curly braces <code>{ }</code> are always required.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: Iterating Over Slices -->
+        <section id="slice-iteration">
+            <h2>2. Iterating Over Slices by Index</h2>
+            <p>
+                A very common use of for loops is to traverse through elements of a slice using index access. 
+                The loop counter starts at <code>0</code> and increments up to, but not including, the length of the slice (<code>len(slice)</code>).
+            </p>
+            <pre><code>birds := []int{2, 5, 0, 7}
+
+for i := 0; i < len(birds); i++ {
+    fmt.Printf("Day %d: counted %d birds\n", i, birds[i])
+}</code></pre>
+
+            <h3>Slicing a Range Before Looping</h3>
+            <p>
+                If you only want to loop through a subset of a slice (e.g. a specific week's worth of data), you can take a slice of the slice first:
+            </p>
+            <pre><code>// Get only the second week (indices 7 to 13)
+weekTwo := birdsPerDay[7:14]
+
+for i := 0; i < len(weekTwo); i++ {
+    // Process weekTwo[i]
+}</code></pre>
+        </section>
+
+        <!-- Section 3: Customizing Steps -->
+        <section id="custom-steps">
+            <h2>3. Custom Steps (Alternate Increments)</h2>
+            <p>
+                The <code>post</code> component can be modified to step through the collection differently. Instead of adding 1 (<code>i++</code>), you can add any step size, such as 2 (<code>i += 2</code>).
+            </p>
+            <p>
+                This allows you to visit every second element, starting from index 0:
+            </p>
+            <pre><code>numbers := []int{10, 20, 30, 40, 50, 60}
+
+for i := 0; i < len(numbers); i += 2 {
+    // i will be 0, 2, 4
+    fmt.Println(numbers[i]) // Output: 10, 30, 50
+}</code></pre>
+
+            <div class="callout try-this">
+                <div class="callout-title">💡 Remember: While loops in Go</div>
+                <p>
+                    Since Go has no <code>while</code> keyword, you can create a while-loop by omitting the <code>init</code> and <code>post</code> statements:
+                </p>
+                <pre><code>sum := 1
+for sum < 1000 {
+    sum += sum
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 4: Quiz -->
+        <section id="quiz">
+            <h2>Self-Check Quiz</h2>
+            <p>Test your knowledge on loops in Go!</p>
+
+            <!-- Quiz Question 1 -->
+            <div class="quiz-container" id="q1-container">
+                <div class="quiz-question">1. Which of the following is a valid Go loop declaration?</div>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkQ1(this, 0)"><code>for (i := 0; i < 5; i++) { }</code></button>
+                    <button class="quiz-option" onclick="checkQ1(this, 1)"><code>for i := 0; i < 5; i++ { }</code></button>
+                    <button class="quiz-option" onclick="checkQ1(this, 2)"><code>while i < 5 { }</code></button>
+                </div>
+                <div class="quiz-feedback" id="q1-feedback"></div>
+            </div>
+
+            <!-- Quiz Question 2 -->
+            <div class="quiz-container" id="q2-container">
+                <div class="quiz-question">2. How would you start a loop to update every second element in a slice, starting from the first element (index 0)?</div>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkQ2(this, 0)"><code>for i := 0; i < len(slice); i++</code></button>
+                    <button class="quiz-option" onclick="checkQ2(this, 1)"><code>for i := 1; i < len(slice); i += 2</code></button>
+                    <button class="quiz-option" onclick="checkQ2(this, 2)"><code>for i := 0; i < len(slice); i += 2</code></button>
+                </div>
+                <div class="quiz-feedback" id="q2-feedback"></div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Built with ❤️ for Elyse's Bird Watching Logs. Track: Go | Exercise: Bird Watcher</p>
+    </footer>
+
+    <script>
+        function checkQ1(button, index) {
+            const container = document.getElementById('q1-container');
+            const feedback = document.getElementById('q1-feedback');
+            const options = container.querySelectorAll('.quiz-option');
+
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'wrong');
+                opt.disabled = true;
+            });
+
+            if (index === 1) {
+                button.classList.add('correct');
+                feedback.className = "quiz-feedback success";
+                feedback.innerHTML = "Correct! Go does not use parentheses in loop headers, and 'while' is not a keyword.";
+            } else {
+                button.classList.add('wrong');
+                options[1].classList.add('correct');
+                feedback.className = "quiz-feedback error";
+                feedback.innerHTML = "Incorrect. Remember, Go has no 'while' keyword and does not allow parentheses in loop headers.";
+            }
+            feedback.style.display = 'block';
+        }
+
+        function checkQ2(button, index) {
+            const container = document.getElementById('q2-container');
+            const feedback = document.getElementById('q2-feedback');
+            const options = container.querySelectorAll('.quiz-option');
+
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'wrong');
+                opt.disabled = true;
+            });
+
+            if (index === 2) {
+                button.classList.add('correct');
+                feedback.className = "quiz-feedback success";
+                feedback.innerHTML = "Correct! Starting at index 0 and incrementing by 2 (i += 2) visits indices 0, 2, 4, etc.";
+            } else {
+                button.classList.add('wrong');
+                options[2].classList.add('correct');
+                feedback.className = "quiz-feedback error";
+                feedback.innerHTML = "Incorrect. Index 0 is the first element, and i += 2 skips every second element. i++ visits every element, and starting at index 1 would miss the first element.";
+            }
+            feedback.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
